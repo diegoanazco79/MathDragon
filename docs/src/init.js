@@ -1,5 +1,5 @@
 import Bootloader from './bootloader.js'
-import Scene_play from './scenes/scene_play.js'
+import Add_scene from './scenes/add_scene.js'
 const config = {
     width: 1280,
     height: 720,
@@ -9,7 +9,7 @@ const config = {
     },
     scene: [
         Bootloader,
-        Scene_play
+        Add_scene
     ]
 }
 
