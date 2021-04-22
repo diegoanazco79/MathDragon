@@ -7,7 +7,7 @@ class Bootloader extends Phaser.Scene {
             this.scene.start("Add_scene") //Llamamos a la escena que queremos.
         })
 
-        this.load.image("fondo", "./assets/fondo_add_v1.png")
+        this.load.image("fondo", "./assets/fondo.png")
         
     }
     
