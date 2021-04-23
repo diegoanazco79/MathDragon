@@ -12,40 +12,50 @@ class Add_scene extends Phaser.Scene{
         
         
         //Dragon
-        this.dragon = this.physics.add.image(center_width, center_height, "dragon")
+        this.dragon = this.physics.add.sprite(center_width ,center_height, 'mov_dragon')
+        this.anims.create({
+            key: 'dragon_mov',
+            frames: this.anims.generateFrameNumbers('mov_dragon', {
+                frames: [0, 1, 2, 3]
+            }),
+            repeat: -1,
+            frameRate: 8
+        })
         this.dragon.setCollideWorldBounds(true)
-        
-
+        this.dragon.anims.play('dragon_mov')
         
         
         //Carne
-        this.add.image(center_width + 150, center_height, "carne")
+        this.carne= this.physics.add.image(center_width + 250, center_height, "carne")
         
-        
-        
-        //Bomba
-        this.add.image(center_width + 250, center_height, "bomba")
+        //Función de Puntos de Carne
+        this.physics.add.collider(this.dragon, this.carne, this.puntoCarne, null, this)
 
-
+        
         //Controles
         this.cursor = this.input.keyboard.createCursorKeys()
     }
 
     update(){
-        if( this.cursor.down.isDown){
-            this.dragon.body.setVelocityY(200)
+        if(this.cursor.down.isDown){
+            this.dragon.body.setVelocityY(100)
         } else if (this.cursor.up.isDown) {
-            this.dragon.body.setVelocityY(-200)
+            this.dragon.body.setVelocityY(-100)
         } else if (this.cursor.left.isDown){
-            this.dragon.body.setVelocityX(-200)
+            this.dragon.body.setVelocityX(-100)
         } else if (this.cursor.right.isDown){
             this.dragon.body.setVelocityX(200)
         }
         else {
             this.dragon.body.setVelocityY(0)
-            this.dragon.body.setVelocityX(0)
-        }
-       
+            this.dragon.body.setVelocityX(0)  
+        }       
+    }
+
+    puntoCarne ()
+    {
+        this.carne.disableBody(true, true);
+        console.log("Punto")
     }
 
 }
