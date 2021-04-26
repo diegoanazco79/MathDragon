@@ -12,6 +12,8 @@ class Bootloader extends Phaser.Scene {
         this.load.image("carne", "./assets/carne.png")
         this.load.image("bomba", "./assets/bomba.png")
         this.load.spritesheet("mov_dragon", "./assets/mov_sprite.png", { frameWidth: 120, frameHeight: 120})
+        this.load.spritesheet("dan_dragon", "./assets/dan_sprite.png", { frameWidth: 120, frameHeight: 120})
+        this.load.spritesheet("muer_dragon", "./assets/muerte_sprite.png", { frameWidth: 120, frameHeight: 120})
         
     }
     
