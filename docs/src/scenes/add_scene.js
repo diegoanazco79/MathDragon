@@ -77,7 +77,7 @@ class Add_scene extends Phaser.Scene{
         } else if (this.cursor.up.isDown) {
             this.dragon.body.setVelocityY(-150)
         } else if (this.cursor.left.isDown){
-            this.dragon.body.setVelocityX(-150)
+            this.dragon.body.setVelocityX(-250)
         } else if (this.cursor.right.isDown){
             this.dragon.body.setVelocityX(250)
         } else{
@@ -100,6 +100,8 @@ class Add_scene extends Phaser.Scene{
         this.vida = this.vida - 1
         console.log("Vida: " + this.vida)
         if (this.vida <= 0){
+            this.dragon.body.setAccelerationX(500)
+            this.dragon.body.setAccelerationY(500)
             this.input.keyboard.removeAllKeys(true)
             this.dragon.anims.play('dragon_muer', true)
             console.log("Muerto")
