@@ -2,7 +2,7 @@ import Bootloader from './bootloader.js'
 import Add_scene from './scenes/add_scene.js'
 const config = {
     width: 1280,
-    height: 600,
+    height: 720,
     parent: "contenedor",
     physics:{
         default: "arcade"

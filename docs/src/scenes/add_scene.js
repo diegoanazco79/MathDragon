@@ -15,11 +15,14 @@ class Add_scene extends Phaser.Scene{
 
 
         //Fondo
-        this.fondo = this.add.image(center_width, center_height, "fondo")
+        this.fondo = this.add.image(center_width, center_height, "fondov3")
+        this.marco = this.physics.add.image(center_width, center_height-305, "marco").setImmovable(true)
+        
 
         
         //Dragon
-        this.dragon = this.physics.add.sprite(200 ,center_height, 'mov_dragon').setImmovable(true)
+        this.dragon = this.physics.add.sprite(200 ,center_height, 'mov_dragon')
+        this.physics.add.collider(this.dragon, this.marco);
         //Dragon: Animación vuelo
         this.anims.create({
             key: 'dragon_mov',
@@ -61,6 +64,11 @@ class Add_scene extends Phaser.Scene{
         this.bomba = this.physics.add.group()
         this.nuevaBomba()
                
+        //Pescado
+        this.pescado = this.physics.add.group()
+        this.nuevaPescado()
+
+
         //Controles
         this.cursor = this.input.keyboard.createCursorKeys()
 
@@ -110,7 +118,7 @@ class Add_scene extends Phaser.Scene{
 
 
     nuevaCarne() {
-        this.carne.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(100,500), 'carne');
+        this.carne.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(150,600), 'carne');
         this.carne.setVelocityX(-200);
         this.carne.checkWorldBounds = true;
         this.carne.outOfBoundsKill = true;
@@ -118,8 +126,17 @@ class Add_scene extends Phaser.Scene{
         this.physics.add.overlap(this.dragon, this.carne, this.puntoCarne, null, this);
     }
 
+    nuevaPescado() {
+        this.pescado.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(150,600), 'pescado');
+        this.pescado.setVelocityX(-200);
+        this.pescado.checkWorldBounds = true;
+        this.pescado.outOfBoundsKill = true;
+        this.time.delayedCall(1500, this.nuevaPescado, [], this);
+        //this.physics.add.overlap(this.dragon, this.carne, this.puntoCarne, null, this);
+    }
+
     nuevaBomba() {
-        this.bomba.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(100,500), 'bomba');
+        this.bomba.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(150,600), 'bomba');
         this.bomba.setVelocityX(-200);
         this.bomba.checkWorldBounds = true;
         this.bomba.outOfBoundsKill = true;
