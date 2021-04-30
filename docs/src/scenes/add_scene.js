@@ -12,6 +12,7 @@ class Add_scene extends Phaser.Scene{
         //Puntaje
         this.puntaje = 0
         this.puntajeCarnes = 0
+        this.puntajePescados = 0
         this.vida = 3
 
 
@@ -103,6 +104,14 @@ class Add_scene extends Phaser.Scene{
         console.log("Carnes: " + this.puntajeCarnes)
     }
 
+    puntoPescado(dragon, pescado){
+        pescado.disableBody(true,true)
+        this.puntaje = this.puntaje + 1
+        this.puntajePescados = this.puntajePescados + 1
+        console.log("Total: " + this.puntaje)
+        console.log("Pescados: " + this.puntajePescados)
+    }
+
     puntoBomba(dragon, bomba){
         bomba.disableBody(true,true)
         this.dragon.anims.play('dragon_dan', true)
@@ -133,7 +142,7 @@ class Add_scene extends Phaser.Scene{
         this.pescado.checkWorldBounds = true;
         this.pescado.outOfBoundsKill = true;
         this.time.delayedCall(1500, this.nuevaPescado, [], this);
-        //this.physics.add.overlap(this.dragon, this.carne, this.puntoCarne, null, this);
+        this.physics.add.overlap(this.dragon, this.pescado, this.puntoPescado, null, this);
     }
 
     nuevaBomba() {
