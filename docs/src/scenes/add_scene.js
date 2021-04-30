@@ -24,7 +24,7 @@ class Add_scene extends Phaser.Scene{
         this.scoreCarnes = this.add.text(center_width + 460, center_height - 328, '', { fontSize: '40px', color: 'white' });
 
         //Tiempo
-        this.temporizador = 20
+        this.temporizador = Phaser.Math.Between(20, 60)
         this.scoreTemporizador = this.add.text(center_width , center_height - 335, this.temporizador , { fontSize: '80px', color: 'white' });
         this.funTemporizador()
 
@@ -81,7 +81,34 @@ class Add_scene extends Phaser.Scene{
         this.cursor = this.input.keyboard.createCursorKeys()
 
         //Vidas
-        
+        this.corazon_1 = this.physics.add.sprite(center_width - 520 , center_height - 310, 'cora_sprite')
+        this.anims.create({
+            key: 'corazon_1',
+            frames: this.anims.generateFrameNumbers('cora_sprite', {
+                frames: [0, 1, 2, 3, 4]
+            }),
+            repeat: 0,
+            frameRate: 6
+        })
+        this.corazon_2 = this.physics.add.sprite(center_width - 460 , center_height - 310, 'cora_sprite')
+        this.anims.create({
+            key: 'corazon_2',
+            frames: this.anims.generateFrameNumbers('cora_sprite', {
+                frames: [0, 1, 2, 3, 4]
+            }),
+            repeat: 0,
+            frameRate: 6
+        })
+        this.corazon_3 = this.physics.add.sprite(center_width - 400 , center_height - 310, 'cora_sprite')
+        this.anims.create({
+            key: 'corazon_3',
+            frames: this.anims.generateFrameNumbers('cora_sprite', {
+                frames: [0, 1, 2, 3, 4]
+            }),
+            repeat: 0,
+            frameRate: 6
+        })
+
 
     }
 
@@ -123,11 +150,17 @@ class Add_scene extends Phaser.Scene{
         this.dragon.anims.play('dragon_dan', true)
         this.vida = this.vida - 1
         console.log("Vida: " + this.vida)
-        if (this.vida <= 0){
-            this.dragon.body.setAccelerationX(500)
-            this.dragon.body.setAccelerationY(500)
-            this.input.keyboard.removeAllKeys(true)
+        if (this.vida === 2){
+            this.corazon_3.anims.play('corazon_3', true)
+        } else if (this.vida === 1){
+            this.corazon_2.anims.play('corazon_2', true)
+        } else if (this.vida === 0){
+            this.corazon_1.anims.play('corazon_1', true)
+            this.dragon.body.setAccelerationX(300)
+            this.dragon.body.setAccelerationY(300)
             this.dragon.anims.play('dragon_muer', true)
+            this.input.keyboard.removeAllKeys(true)
+            
             console.log("Muerto")
         }
     }
