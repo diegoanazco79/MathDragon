@@ -9,19 +9,21 @@ class Add_scene extends Phaser.Scene{
         let center_width = this.sys.game.config.width/2
         let center_height = this.sys.game.config.height/2        
 
-        //Puntaje
-        this.puntaje = 0
-        this.puntajeCarnes = 0
-        this.puntajePescados = 0
-        this.vida = 3
-
+        
 
         //Fondo
         this.fondo = this.add.image(center_width, center_height, "fondov3")
         this.marco = this.physics.add.image(center_width, center_height-305, "marco").setImmovable(true)
         
+        //Puntajes
+        this.puntaje = 0
+        this.puntajeCarnes = 0
+        this.puntajePescados = 0
+        this.vida = 3
+        this.scorePescados = this.add.text(center_width + 300, center_height - 328, '', { fontSize: '40px', color: 'white' });
+        this.scoreCarnes = this.add.text(center_width + 460, center_height - 328, '', { fontSize: '40px', color: 'white' });
 
-        
+
         //Dragon
         this.dragon = this.physics.add.sprite(200 ,center_height, 'mov_dragon')
         this.physics.add.collider(this.dragon, this.marco);
@@ -100,16 +102,16 @@ class Add_scene extends Phaser.Scene{
         carne.disableBody(true, true)
         this.puntaje =  this.puntaje + 1
         this.puntajeCarnes = this.puntajeCarnes + 1
+        this.scoreCarnes.setText(' ' + this.puntajeCarnes)
         console.log("Total: " + this.puntaje)
-        console.log("Carnes: " + this.puntajeCarnes)
     }
 
     puntoPescado(dragon, pescado){
         pescado.disableBody(true,true)
         this.puntaje = this.puntaje + 1
         this.puntajePescados = this.puntajePescados + 1
+        this.scorePescados.setText(' ' + this.puntajePescados)
         console.log("Total: " + this.puntaje)
-        console.log("Pescados: " + this.puntajePescados)
     }
 
     puntoBomba(dragon, bomba){
@@ -132,7 +134,7 @@ class Add_scene extends Phaser.Scene{
         this.carne.setVelocityX(-200);
         this.carne.checkWorldBounds = true;
         this.carne.outOfBoundsKill = true;
-        this.time.delayedCall(2000, this.nuevaCarne, [], this);
+        this.time.delayedCall(1000, this.nuevaCarne, [], this);
         this.physics.add.overlap(this.dragon, this.carne, this.puntoCarne, null, this);
     }
 
