@@ -143,7 +143,7 @@ class Add_scene extends Phaser.Scene{
         this.pescado.setVelocityX(-200);
         this.pescado.checkWorldBounds = true;
         this.pescado.outOfBoundsKill = true;
-        this.time.delayedCall(1500, this.nuevaPescado, [], this);
+        this.time.delayedCall(2500, this.nuevaPescado, [], this);
         this.physics.add.overlap(this.dragon, this.pescado, this.puntoPescado, null, this);
     }
 
