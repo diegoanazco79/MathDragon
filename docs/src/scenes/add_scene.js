@@ -23,6 +23,10 @@ class Add_scene extends Phaser.Scene{
         this.scorePescados = this.add.text(center_width + 300, center_height - 328, '', { fontSize: '40px', color: 'white' });
         this.scoreCarnes = this.add.text(center_width + 460, center_height - 328, '', { fontSize: '40px', color: 'white' });
 
+        //Tiempo
+        this.temporizador = 20
+        this.scoreTemporizador = this.add.text(center_width , center_height - 335, this.temporizador , { fontSize: '80px', color: 'white' });
+        this.funTemporizador()
 
         //Dragon
         this.dragon = this.physics.add.sprite(200 ,center_height, 'mov_dragon')
@@ -128,6 +132,16 @@ class Add_scene extends Phaser.Scene{
         }
     }
 
+    funTemporizador(){
+        this.temporizador = this.temporizador - 1
+        this.scoreTemporizador.setText(this.temporizador)
+        this.time.delayedCall(1000, this.funTemporizador, [], this);
+        if (this.temporizador <= 0){
+            console.log("FIN DEL JUEGO")
+            this.scene.pause()
+        }
+
+    }
 
     nuevaCarne() {
         this.carne.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(150,600), 'carne');
