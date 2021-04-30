@@ -11,6 +11,7 @@ class Add_scene extends Phaser.Scene{
 
         //Puntaje
         this.puntaje = 0
+        this.puntajeCarnes = 0
         this.vida = 3
 
 
@@ -97,13 +98,13 @@ class Add_scene extends Phaser.Scene{
     puntoCarne (dragon, carne){
         carne.disableBody(true, true)
         this.puntaje =  this.puntaje + 1
-        console.log("Puntos: " + this.puntaje)
+        this.puntajeCarnes = this.puntajeCarnes + 1
+        console.log("Total: " + this.puntaje)
+        console.log("Carnes: " + this.puntajeCarnes)
     }
 
     puntoBomba(dragon, bomba){
         bomba.disableBody(true,true)
-        this.puntaje = this.puntaje - 1
-        console.log("Puntos: " + this.puntaje)
         this.dragon.anims.play('dragon_dan', true)
         this.vida = this.vida - 1
         console.log("Vida: " + this.vida)
