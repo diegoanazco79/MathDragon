@@ -10,7 +10,6 @@ class Add_scene extends Phaser.Scene{
         let center_height = this.sys.game.config.height/2        
 
         
-
         //Fondo
         this.fondo = this.add.image(center_width, center_height, "fondov3")
         this.marco = this.physics.add.image(center_width, center_height-305, "marco").setImmovable(true)
@@ -62,6 +61,7 @@ class Add_scene extends Phaser.Scene{
         frameRate: 5
         })
 
+        //Función de daño del dragón
         this.dragon.on('animationcomplete', this.danoComplete, this);
         
         //Carne
@@ -147,46 +147,47 @@ class Add_scene extends Phaser.Scene{
 
     puntoBomba(dragon, bomba){
         bomba.disableBody(true,true)
-        this.dragon.anims.play('dragon_dan', true)
         this.vida = this.vida - 1
-        console.log("Vida: " + this.vida)
+        this.dragon.anims.play('dragon_dan', true)
+        this.contVidas()
+    }
+
+    funTemporizador(){
+        if(this.temporizador > 0){
+            this.temporizador = this.temporizador - 1
+            this.scoreTemporizador.setText(this.temporizador)
+            this.time.delayedCall(1000, this.funTemporizador, [], this);
+            if (this.temporizador <= 0){
+                this.dragon.body.setEnable(false)
+            }
+        }
+    }
+
+    contVidas(){
         if (this.vida === 2){
             this.corazon_3.anims.play('corazon_3', true)
         } else if (this.vida === 1){
             this.corazon_2.anims.play('corazon_2', true)
         } else if (this.vida === 0){
             this.corazon_1.anims.play('corazon_1', true)
-            this.dragon.body.setAccelerationX(300)
-            this.dragon.body.setAccelerationY(300)
             this.dragon.anims.play('dragon_muer', true)
-            this.input.keyboard.removeAllKeys(true)
-            
-            console.log("Muerto")
+            this.dragon.body.setEnable(false)
         }
-    }
-
-    funTemporizador(){
-        this.temporizador = this.temporizador - 1
-        this.scoreTemporizador.setText(this.temporizador)
-        this.time.delayedCall(1000, this.funTemporizador, [], this);
-        if (this.temporizador <= 0){
-            console.log("FIN DEL JUEGO")
-            this.scene.pause()
-        }
-
+        
     }
 
     nuevaCarne() {
-        this.carne.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(150,600), 'carne');
+        this.carne.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(150,570), 'carne');
         this.carne.setVelocityX(-200);
         this.carne.checkWorldBounds = true;
         this.carne.outOfBoundsKill = true;
         this.time.delayedCall(1000, this.nuevaCarne, [], this);
         this.physics.add.overlap(this.dragon, this.carne, this.puntoCarne, null, this);
+        
     }
 
     nuevaPescado() {
-        this.pescado.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(150,600), 'pescado');
+        this.pescado.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(150,570), 'pescado');
         this.pescado.setVelocityX(-200);
         this.pescado.checkWorldBounds = true;
         this.pescado.outOfBoundsKill = true;
@@ -195,7 +196,7 @@ class Add_scene extends Phaser.Scene{
     }
 
     nuevaBomba() {
-        this.bomba.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(150,600), 'bomba');
+        this.bomba.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(150,570), 'bomba');
         this.bomba.setVelocityX(-200);
         this.bomba.checkWorldBounds = true;
         this.bomba.outOfBoundsKill = true;
@@ -208,6 +209,7 @@ class Add_scene extends Phaser.Scene{
             this.dragon.play('dragon_mov');
         }
     }
+
 
 }
 
