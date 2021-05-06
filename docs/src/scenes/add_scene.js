@@ -176,6 +176,7 @@ class Add_scene extends Phaser.Scene{
         this.tweenPuntaje.add({
             targets: this.contPuntajeTemp,
             duration: 1500,
+            ease: 'Power1',
             y: 0,
         })
         //this.tweenPuntaje.play()
