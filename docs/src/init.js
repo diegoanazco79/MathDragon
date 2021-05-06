@@ -7,6 +7,9 @@ const config = {
     physics:{
         default: "arcade"
     },
+    dom: {
+        createContainer: true
+    },
     scene: [
         Bootloader,
         Add_scene

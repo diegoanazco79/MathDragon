@@ -10,6 +10,9 @@ class Bootloader extends Phaser.Scene {
         //Fondo
         this.load.image("fondov3", "./assets/fondov3.png")
         this.load.image("marco", "./assets/marcov3.png")
+
+        //Formulario
+        this.load.html('form', "./assets/respuesta.html")
         
         //Dragon
         this.load.image("dragon", "./assets/dragon.png")

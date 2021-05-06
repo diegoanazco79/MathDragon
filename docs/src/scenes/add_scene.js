@@ -11,6 +11,7 @@ class Add_scene extends Phaser.Scene{
 
         
         //Fondo
+        
         this.fondo = this.add.image(center_width, center_height, "fondov3")
         this.marco = this.physics.add.image(center_width, center_height-305, "marco").setImmovable(true)
 
@@ -143,6 +144,9 @@ class Add_scene extends Phaser.Scene{
         })
         this.carneFigProblema = this.add.image(center_width - 200, center_height + 85, 'carne' )
         this.pescadoFigProblema = this.add.image(center_width - 200, center_height + 20, 'pescado' )
+        this.opPescadoFigProblema = this.add.image(center_width + 90, center_height + 60, 'pescado' )
+        this.opCarneFigProblema = this.add.image(center_width + 180, center_height + 60, 'carne' )
+        
 
         this.preguntaProblema01 = this.add.text(center_width + 30, center_height - 50, "¿Cuánta comida ha ", {
             fontFamily: 'Berlin_Sans',
@@ -159,6 +163,14 @@ class Add_scene extends Phaser.Scene{
             fontSize: '25px',
             color: 'black'
         })
+        this.preguntaProblema04 = this.add.text(center_width + 115, center_height + 40 , " + ", {
+            fontFamily: 'Berlin_Sans',
+            fontSize: '40px',
+            color: 'black'
+        })
+
+        this.respuestaFinal = this.add.dom(center_width + 135,center_height + 105 ).createFromCache('form')
+
 
         //Contenedor
         this.contPuntajeTemp = this.add.container(0, -700, [
@@ -170,7 +182,11 @@ class Add_scene extends Phaser.Scene{
             this.pescadoFigProblema,
             this.preguntaProblema01,
             this.preguntaProblema02,
-            this.preguntaProblema03
+            this.preguntaProblema03,
+            this.preguntaProblema04,
+            this.respuestaFinal,
+            this.opPescadoFigProblema,
+            this.opCarneFigProblema
         ])
         
         this.tweenPuntaje = this.tweens.createTimeline()
@@ -180,9 +196,8 @@ class Add_scene extends Phaser.Scene{
             ease: 'Power1',
             y: 0,
         })
-        //this.tweenPuntaje.play()
         
-
+    
     }
 
     update(){
