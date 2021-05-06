@@ -13,18 +13,32 @@ class Add_scene extends Phaser.Scene{
         //Fondo
         this.fondo = this.add.image(center_width, center_height, "fondov3")
         this.marco = this.physics.add.image(center_width, center_height-305, "marco").setImmovable(true)
+
+        
         
         //Puntajes
         this.puntaje = 0
         this.puntajeCarnes = 0
         this.puntajePescados = 0
         this.vida = 3
-        this.scorePescados = this.add.text(center_width + 300, center_height - 328, '', { fontSize: '40px', color: 'white' });
-        this.scoreCarnes = this.add.text(center_width + 460, center_height - 328, '', { fontSize: '40px', color: 'white' });
+        this.scorePescados = this.add.text(center_width + 310, center_height - 338, '', { 
+            fontFamily: 'Berlin_Sans',
+            fontSize: '50px',
+            color: 'white' }
+            )
+        this.scoreCarnes = this.add.text(center_width + 470, center_height - 338, '', { 
+            fontFamily: 'Berlin_Sans',
+            fontSize: '50px',
+            color: 'white' }
+            )
 
         //Tiempo
         this.temporizador = Phaser.Math.Between(20, 60)
-        this.scoreTemporizador = this.add.text(center_width , center_height - 335, this.temporizador , { fontSize: '80px', color: 'white' });
+        this.scoreTemporizador = this.add.text(center_width , center_height - 355, this.temporizador , { 
+            fontFamily: 'Berlin_Sans',
+            fontSize: '90px',
+            color: 'white' }
+            )
         this.funTemporizador()
 
         //Dragon
@@ -109,6 +123,63 @@ class Add_scene extends Phaser.Scene{
             frameRate: 6
         })
 
+        // Tabla de puntajes y contenedores
+        this.puntosTemp = this.add.image(center_width , center_height + 30, "punt_add")
+        this.textProblema = this.add.text(center_width - 250, center_height - 50, "Kalh ha recolectado: ", {
+            fontFamily: 'Berlin_Sans',
+            fontSize: '25px',
+            color: 'black'
+        })
+        this.carneProblema = this.add.text(center_width - 160, center_height , '', {
+            fontFamily: 'Berlin_Sans',
+            fontSize: '40px',
+            color: 'black'
+        })
+        this.pescadoProblema = this.add.text(center_width - 160, center_height + 65 , '', {
+            fontFamily: 'Berlin_Sans',
+            fontSize: '40px',
+            color: 'black'
+        })
+        this.carneFigProblema = this.add.image(center_width - 200, center_height + 20, 'carne' )
+        this.pescadoFigProblema = this.add.image(center_width - 200, center_height + 85, 'pescado' )
+
+        this.preguntaProblema01 = this.add.text(center_width + 30, center_height - 50, "¿Cuánta comida ha ", {
+            fontFamily: 'Berlin_Sans',
+            fontSize: '25px',
+            color: 'black'
+        })
+        this.preguntaProblema02 = this.add.text(center_width + 45, center_height - 25, "recolectado Kalh ", {
+            fontFamily: 'Berlin_Sans',
+            fontSize: '25px',
+            color: 'black'
+        })
+        this.preguntaProblema03 = this.add.text(center_width + 85, center_height , "en total? ", {
+            fontFamily: 'Berlin_Sans',
+            fontSize: '25px',
+            color: 'black'
+        })
+
+        //Contenedor
+        this.contPuntajeTemp = this.add.container(0, -700, [
+            this.puntosTemp,
+            this.textProblema,
+            this.carneProblema,
+            this.pescadoProblema,
+            this.carneFigProblema,
+            this.pescadoFigProblema,
+            this.preguntaProblema01,
+            this.preguntaProblema02,
+            this.preguntaProblema03
+        ])
+        
+        this.tweenPuntaje = this.tweens.createTimeline()
+        this.tweenPuntaje.add({
+            targets: this.contPuntajeTemp,
+            duration: 1500,
+            y: 0,
+        })
+        //this.tweenPuntaje.play()
+        
 
     }
 
@@ -134,7 +205,9 @@ class Add_scene extends Phaser.Scene{
         this.puntaje =  this.puntaje + 1
         this.puntajeCarnes = this.puntajeCarnes + 1
         this.scoreCarnes.setText(' ' + this.puntajeCarnes)
+        this.carneProblema.setText('= '+ this.puntajeCarnes)
         console.log("Total: " + this.puntaje)
+        
     }
 
     puntoPescado(dragon, pescado){
@@ -142,6 +215,7 @@ class Add_scene extends Phaser.Scene{
         this.puntaje = this.puntaje + 1
         this.puntajePescados = this.puntajePescados + 1
         this.scorePescados.setText(' ' + this.puntajePescados)
+        this.pescadoProblema.setText('= ' + this.puntajePescados)
         console.log("Total: " + this.puntaje)
     }
 
@@ -153,14 +227,18 @@ class Add_scene extends Phaser.Scene{
     }
 
     funTemporizador(){
-        if(this.temporizador > 0){
-            this.temporizador = this.temporizador - 1
-            this.scoreTemporizador.setText(this.temporizador)
-            this.time.delayedCall(1000, this.funTemporizador, [], this);
-            if (this.temporizador <= 0){
-                this.dragon.body.setEnable(false)
+        if(this.vida > 0){
+            if(this.temporizador > 0){
+                this.temporizador = this.temporizador - 1
+                this.scoreTemporizador.setText(this.temporizador)
+                this.time.delayedCall(1000, this.funTemporizador, [], this);
+                if (this.temporizador <= 0){
+                    this.dragon.body.setEnable(false)
+                    this.tweenPuntaje.play()
+                }
             }
         }
+        
     }
 
     contVidas(){
@@ -172,36 +250,45 @@ class Add_scene extends Phaser.Scene{
             this.corazon_1.anims.play('corazon_1', true)
             this.dragon.anims.play('dragon_muer', true)
             this.dragon.body.setEnable(false)
+            this.tweenPuntaje.play()
+            
         }
         
     }
 
     nuevaCarne() {
-        this.carne.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(150,570), 'carne');
-        this.carne.setVelocityX(-200);
-        this.carne.checkWorldBounds = true;
-        this.carne.outOfBoundsKill = true;
-        this.time.delayedCall(1000, this.nuevaCarne, [], this);
-        this.physics.add.overlap(this.dragon, this.carne, this.puntoCarne, null, this);
+        if(this.vida > 0 && this.temporizador > 0){
+            this.carne.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(150,570), 'carne');
+            this.carne.setVelocityX(-200);
+            this.carne.checkWorldBounds = true;
+            this.carne.outOfBoundsKill = true;
+            this.time.delayedCall(1000, this.nuevaCarne, [], this);
+            this.physics.add.overlap(this.dragon, this.carne, this.puntoCarne, null, this);
+        }
         
     }
 
     nuevaPescado() {
-        this.pescado.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(150,570), 'pescado');
-        this.pescado.setVelocityX(-200);
-        this.pescado.checkWorldBounds = true;
-        this.pescado.outOfBoundsKill = true;
-        this.time.delayedCall(2500, this.nuevaPescado, [], this);
-        this.physics.add.overlap(this.dragon, this.pescado, this.puntoPescado, null, this);
+        if(this.vida > 0 && this.temporizador > 0) {
+            this.pescado.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(150,570), 'pescado');
+            this.pescado.setVelocityX(-200);
+            this.pescado.checkWorldBounds = true;
+            this.pescado.outOfBoundsKill = true;
+            this.time.delayedCall(2500, this.nuevaPescado, [], this);
+            this.physics.add.overlap(this.dragon, this.pescado, this.puntoPescado, null, this);
+        }
     }
 
     nuevaBomba() {
-        this.bomba.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(150,570), 'bomba');
-        this.bomba.setVelocityX(-200);
-        this.bomba.checkWorldBounds = true;
-        this.bomba.outOfBoundsKill = true;
-        this.time.delayedCall(4000, this.nuevaBomba, [], this);
-        this.physics.add.overlap(this.dragon, this.bomba, this.puntoBomba, null, this);
+        if(this.vida > 0 && this.temporizador > 0){
+            this.bomba.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(150,570), 'bomba');
+            this.bomba.setVelocityX(-200);
+            this.bomba.checkWorldBounds = true;
+            this.bomba.outOfBoundsKill = true;
+            this.time.delayedCall(4000, this.nuevaBomba, [], this);
+            this.physics.add.overlap(this.dragon, this.bomba, this.puntoBomba, null, this);
+        }
+        
     }
 
     danoComplete(animation, frame, sprite){
