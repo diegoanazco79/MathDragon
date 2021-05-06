@@ -21,6 +21,7 @@ class Add_scene extends Phaser.Scene{
         this.data.set('puntajeCarnes', 0)
         this.data.set('puntajePescados', 0)
         this.data.set('vida', 3)
+        this.data.set('temporizador', Phaser.Math.Between(20,60))
 
         this.scorePescados = this.add.text(center_width + 310, center_height - 338, ' 0', { 
             fontFamily: 'Berlin_Sans',
@@ -34,8 +35,7 @@ class Add_scene extends Phaser.Scene{
             )
 
         //Tiempo
-        this.temporizador = Phaser.Math.Between(20, 60)
-        this.scoreTemporizador = this.add.text(center_width , center_height - 355, this.temporizador , { 
+        this.scoreTemporizador = this.add.text(center_width , center_height - 355, this.data.get('temporizador') , { 
             fontFamily: 'Berlin_Sans',
             fontSize: '90px',
             color: 'white' }
@@ -240,11 +240,11 @@ class Add_scene extends Phaser.Scene{
 
     funTemporizador(){
         if(this.data.get('vida') > 0){
-            if(this.temporizador > 0){
-                this.temporizador = this.temporizador - 1
-                this.scoreTemporizador.setText(this.temporizador)
+            if(this.data.get('temporizador') > 0){
+                this.data.setValue('temporizador', this.data.get('temporizador') - 1) 
+                this.scoreTemporizador.setText(this.data.get('temporizador'))
                 this.time.delayedCall(1000, this.funTemporizador, [], this);
-                if (this.temporizador <= 0){
+                if (this.data.get('temporizador') <= 0){
                     this.dragon.body.setEnable(false)
                     this.tweenPuntaje.play()
                 }
@@ -269,30 +269,30 @@ class Add_scene extends Phaser.Scene{
     }
 
     nuevaCarne() {
-        if(this.data.get('vida') > 0 && this.temporizador > 0){
+        if(this.data.get('vida') > 0 && this.data.get('temporizador')> 0){
             this.carne.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(150,570), 'carne');
             this.carne.setVelocityX(-200);
             this.carne.checkWorldBounds = true;
             this.carne.outOfBoundsKill = true;
-            this.time.delayedCall(1000, this.nuevaCarne, [], this);
+            this.time.delayedCall(2500, this.nuevaCarne, [], this);
             this.physics.add.overlap(this.dragon, this.carne, this.puntoCarne, null, this);
         }
         
     }
 
     nuevaPescado() {
-        if(this.data.get('vida')> 0 && this.temporizador > 0) {
+        if(this.data.get('vida')> 0 && this.data.get('temporizador') > 0) {
             this.pescado.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(150,570), 'pescado');
             this.pescado.setVelocityX(-200);
             this.pescado.checkWorldBounds = true;
             this.pescado.outOfBoundsKill = true;
-            this.time.delayedCall(2500, this.nuevaPescado, [], this);
+            this.time.delayedCall(1000, this.nuevaPescado, [], this);
             this.physics.add.overlap(this.dragon, this.pescado, this.puntoPescado, null, this);
         }
     }
 
     nuevaBomba() {
-        if(this.data.get('vida')> 0 && this.temporizador > 0){
+        if(this.data.get('vida')> 0 && this.data.get('temporizador') > 0){
             this.bomba.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(150,570), 'bomba');
             this.bomba.setVelocityX(-200);
             this.bomba.checkWorldBounds = true;
