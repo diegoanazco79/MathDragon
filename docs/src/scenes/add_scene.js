@@ -8,11 +8,12 @@ class Add_scene extends Phaser.Scene{
         //Dimensiones
         let center_width = this.sys.game.config.width/2
         let center_height = this.sys.game.config.height/2        
-
+        var respuesta_final = 0
         
         //Fondo
         
         this.fondo = this.add.image(center_width, center_height, "fondov3")
+        //Phaser.Scene.fondo = this.add.image(center_width,center_height, "fondov3")
         this.marco = this.physics.add.image(center_width, center_height-305, "marco").setImmovable(true)
 
         
@@ -23,6 +24,7 @@ class Add_scene extends Phaser.Scene{
         this.data.set('puntajePescados', 0)
         this.data.set('vida', 3)
         this.data.set('temporizador', Phaser.Math.Between(20,60))
+        
 
         this.scorePescados = this.add.text(center_width + 310, center_height - 338, ' 0', { 
             fontFamily: 'Berlin_Sans',
@@ -169,9 +171,13 @@ class Add_scene extends Phaser.Scene{
             color: 'black'
         })
 
+        
+
         this.respuestaFinal = this.add.dom(center_width + 135,center_height + 105 ).createFromCache('form')
 
+       
 
+       
         //Contenedor
         this.contPuntajeTemp = this.add.container(0, -700, [
             this.puntosTemp,
@@ -196,8 +202,11 @@ class Add_scene extends Phaser.Scene{
             ease: 'Power1',
             y: 0,
         })
+
         
-    
+       
+        
+        
     }
 
     update(){
@@ -215,6 +224,9 @@ class Add_scene extends Phaser.Scene{
             this.dragon.body.setVelocityX(0)
             this.dragon.body.setVelocityY(0)
         }
+
+        
+
     }
 
     puntoCarne (dragon, carne){
@@ -254,6 +266,8 @@ class Add_scene extends Phaser.Scene{
     }
 
     funTemporizador(){
+        var puntaje_temp = this.data.get('puntaje')
+        var respuesta_temp
         if(this.data.get('vida') > 0){
             if(this.data.get('temporizador') > 0){
                 this.data.setValue('temporizador', this.data.get('temporizador') - 1) 
@@ -262,13 +276,30 @@ class Add_scene extends Phaser.Scene{
                 if (this.data.get('temporizador') <= 0){
                     this.dragon.body.setEnable(false)
                     this.tweenPuntaje.play()
+                    this.respuestaFinal.addListener('click')
+                    this.respuestaFinal.on('click', function (event) {
+                        if(event.target.name === 'enviar'){
+                            respuesta_temp = this.getChildByName('respuesta').value
+                            console.log("=============")
+                            console.log('Puntaje: ' + puntaje_temp)
+                            console.log('Respuesta Estudiante: ' + respuesta_temp)
+                            if(puntaje_temp == respuesta_temp){
+                                console.log("GANASTE")
+                            } else {
+                                console.log("VUELVE A INTENTARLO")
+                            }
+                        }
+                    })
                 }
             }
         }
         
     }
 
+
     contVidas(){
+        var puntaje_temp = this.data.get('puntaje')
+        var respuesta_temp
         if (this.data.get('vida') === 2){
             this.corazon_3.anims.play('corazon_3', true)
         } else if (this.data.get('vida') === 1){
@@ -278,9 +309,24 @@ class Add_scene extends Phaser.Scene{
             this.dragon.anims.play('dragon_muer', true)
             this.dragon.body.setEnable(false)
             this.tweenPuntaje.play()
-            
+            this.respuestaFinal.addListener('click')
+            this.respuestaFinal.on('click', function (event) {
+                if(event.target.name === 'enviar'){
+                    respuesta_temp = this.getChildByName('respuesta').value
+                    console.log("=============")
+                    console.log('Puntaje: ' + puntaje_temp)
+                    console.log('Respuesta Estudiante: ' + respuesta_temp)
+                    if(puntaje_temp == respuesta_temp){
+                        console.log("GANASTE")
+                    } else {
+                        console.log("VUELVE A INTENTARLO")
+                    }
+                }
+            })
         }
         
+         
+         
     }
 
     nuevaCarne() {
