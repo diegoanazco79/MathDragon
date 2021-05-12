@@ -363,11 +363,19 @@ class Add_scene extends Phaser.Scene{
             color: 'black'
         })
 
+        //Mensaje reiniciar
+        this.msjGanasteReiniciar = this.add.text(center_width - 40, center_height + 70, "Presiona ESPACIO para volver a jugar", {
+            fontFamily: 'Berlin_Sans',
+            fontSize: '18px',
+            color: 'black'
+        })
+
         //Contenedor: Marco Ganador
         this.contMarcoGanador = this.add.container(1000, 0, [
             this.marcoGanador,
             this.dragonGanador,
-            this.msjGanaste
+            this.msjGanaste,
+            this.msjGanasteReiniciar
         ])
 
         //Tween contenedor: Marco Ganador
@@ -379,6 +387,7 @@ class Add_scene extends Phaser.Scene{
             x:0
         })
         
+
         //Marco Reset
         this.marcoReset = this.add.image(center_width, center_height, "msj_ganador")
         //Dragon Reset
@@ -394,13 +403,19 @@ class Add_scene extends Phaser.Scene{
             fontSize: '50px',
             color: 'black'
         })
+        this.msjResetReiniciar = this.add.text(center_width - 40, center_height + 70, "Presiona ESPACIO para volver a jugar", {
+            fontFamily: 'Berlin_Sans',
+            fontSize: '18px',
+            color: 'black'
+        })
 
         //Contenedor: Marco Reset
         this.contMarcoReset = this.add.container(1000,0, [
             this.marcoReset,
             this.dragonReset,
             this.msjReset01,
-            this.msjReset02
+            this.msjReset02,
+            this.msjResetReiniciar
         ])
 
         //Tween contenedor: Marco Reset
@@ -410,9 +425,7 @@ class Add_scene extends Phaser.Scene{
             duration:1500,
             ease: 'Power1',
             x:0
-        })
-
-        
+        })       
 
     }
 
@@ -487,6 +500,8 @@ class Add_scene extends Phaser.Scene{
         var dragonReset = this.dragonReset
         var marcoReset = this.tweenReset
         var dragon = this.dragon
+        var scene = this.scene
+        var space_key = this.input.keyboard.addKey('SPACE')
         if(this.data.get('vida') > 0){
             if(this.data.get('temporizador') > 0){
                 this.data.setValue('temporizador', this.data.get('temporizador') - 1) 
@@ -510,6 +525,9 @@ class Add_scene extends Phaser.Scene{
                                 dragonGanador.anims.play('dragon_mov')
                                 dragon.body.reset(1400,400)
                                 console.log("GANASTE")
+                                space_key.on('down', function(event){
+                                    scene.restart()
+                                })
                             } else {
                                 marcoPistas.play()
                                 if(event.target.name === 'enviar'){
@@ -532,6 +550,9 @@ class Add_scene extends Phaser.Scene{
                                         dragon.body.reset(1400,400)
                                         marcoReset.play()
                                         dragonReset.anims.play('dragon_mov')
+                                        space_key.on('down', function(event){
+                                            scene.restart()
+                                        })
                                     }
 
                                 }
@@ -562,6 +583,8 @@ class Add_scene extends Phaser.Scene{
         var dragonReset = this.dragonReset
         var marcoReset = this.tweenReset
         var dragon = this.dragon
+        var scene = this.scene
+        var space_key = this.input.keyboard.addKey('SPACE')
         if (this.data.get('vida') === 2){
             this.corazon_3.anims.play('corazon_3', true)
         } else if (this.data.get('vida') === 1){
@@ -586,6 +609,9 @@ class Add_scene extends Phaser.Scene{
                         dragonGanador.anims.play('dragon_mov')
                         dragon.body.reset(1400,400)
                         console.log("GANASTE")
+                        space_key.on('down', function(event){
+                            scene.restart()
+                        })
                     } else {
                         marcoPistas.play()
                         if(event.target.name === 'enviar'){
@@ -608,6 +634,9 @@ class Add_scene extends Phaser.Scene{
                                 dragon.body.reset(1400,400)
                                 marcoReset.play()
                                 dragonReset.anims.play('dragon_mov')
+                                space_key.on('down', function(event){
+                                    scene.restart()
+                                })
                                 
                             }
                         }
