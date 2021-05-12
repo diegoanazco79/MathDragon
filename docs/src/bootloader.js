@@ -21,13 +21,26 @@ class Bootloader extends Phaser.Scene {
         this.load.spritesheet("muer_dragon", "./assets/muerte_sprite.png", { frameWidth: 120, frameHeight: 120})
         this.load.spritesheet("cora_sprite", "./assets/cora_sprite.png", { frameWidth: 56, frameHeight: 56})
         
+        //Vidas
+        this.load.image("corazon", "./assets/corazon.png")
+
+        //Tiempo
+        this.load.image("tiempo", "./assets/tiempo.png")
+
+        //Pistas
+        this.load.image("pistas", "./assets/pistas-marco.png")
+
+        //Ganador
+        this.load.image("msj_ganador", "./assets/marco-ganador.png")
+
         //Obstaculos
         this.load.image("carne", "./assets/carne.png")
         this.load.image("pescado", "./assets/pescado.png")
         this.load.image("bomba", "./assets/bomba.png")
         
         //Puntuaciones
-        this.load.image("punt_add", "./assets/puntos_add.png")
+        this.load.image("punt_add", "./assets/puntuaciones-marco.png")
+        this.load.image("punt_razon", "./assets/puntuaciones-marco-razon.png")
     }
     
 }
