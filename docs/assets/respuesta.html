@@ -1,2 +1,2 @@
-<input size="4" type="text" name="respuesta"  style="font-size: 20px; border-radius: 8px; text-align: center">
+<input size="4" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" name="respuesta"  style="font-size: 20px; border-radius: 8px; text-align: center">
 <input  type="button" name="enviar" value="Enviar" style="font-size: 18px; border-radius: 6px; font-family: Berlin_Sans"><br />

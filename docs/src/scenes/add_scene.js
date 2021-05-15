@@ -10,11 +10,12 @@ class Add_scene extends Phaser.Scene{
         let center_height = this.sys.game.config.height/2        
         
         //Fondo
-        
+        this.barra = this.physics.add.image(center_width + 300, center_height, "barra").setImmovable(true)
         this.fondo = this.add.image(center_width, center_height, "fondov3")
-        //Phaser.Scene.fondo = this.add.image(center_width,center_height, "fondov3")
         this.marco = this.physics.add.image(center_width, center_height-305, "marco").setImmovable(true)
+        
 
+        
         
         
         //Datos del videojuego
@@ -47,7 +48,8 @@ class Add_scene extends Phaser.Scene{
 
         //Dragon
         this.dragon = this.physics.add.sprite(200 ,center_height, 'mov_dragon')
-        this.physics.add.collider(this.dragon, this.marco);
+        this.physics.add.collider(this.dragon, this.marco)
+        this.physics.add.collider(this.dragon, this.barra)
         //Dragon: Animación vuelo
         this.anims.create({
             key: 'dragon_mov',
