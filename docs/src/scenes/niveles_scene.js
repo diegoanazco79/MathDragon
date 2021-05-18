@@ -1,7 +1,14 @@
-import Add_scene from "./add_scene.js"
 class Niveles_scene extends Phaser.Scene{
     constructor(){
-        super({key: "Niveles_scene", active:true})
+        super({key: "Niveles_scene"})
+    }
+
+    preload(){
+        this.load.image("fondov3", "./assets/fondov3.png")
+        this.load.image("nivel_add", "./assets/nivel_add.png")
+        this.load.image("nivel_sus", "./assets/nivel_sus.png")
+        this.load.spritesheet("add_dragon", "./assets/add_sprite.png", { frameWidth: 240, frameHeight: 222})
+        this.load.spritesheet("sus_dragon", "./assets/sus_sprite.png", { frameWidth: 385, frameHeight: 192})
     }
 
     create(){
@@ -18,7 +25,7 @@ class Niveles_scene extends Phaser.Scene{
         .setInteractive()
         .on('pointerover', () =>  this.btn_add.setScale(1.05))
         .on('pointerout', () => this.btn_add.setScale( 1 ))
-        .on('pointerdown', () => this.scene.add("add_scene", new Add_scene))
+        .on('pointerdown', () => this.scene.start("Add_scene"))
 
         this.tweenAdd = this.tweens.createTimeline()
         this.tweenAdd.add({
@@ -56,6 +63,7 @@ class Niveles_scene extends Phaser.Scene{
         .setInteractive()
         .on('pointerover', () =>  this.btn_sus.setScale(1.05))
         .on('pointerout', () => this.btn_sus.setScale( 1 ))
+        .on('pointerdown', () => console.log("Iniciando Sustracción"))
 
         this.tweenSus = this.tweens.createTimeline()
         this.tweenSus.add({
@@ -100,5 +108,3 @@ class Niveles_scene extends Phaser.Scene{
 
 
 }
-
-export default Niveles_scene

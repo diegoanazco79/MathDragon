@@ -1,7 +1,11 @@
-import Niveles_scene from "./niveles_scene.js"
 class Main_menu extends Phaser.Scene{
     constructor(){
         super({key: "Main_menu"})
+    }
+
+    preload(){
+        this.load.image("fondov3", "./assets/fondov3.png")
+        this.load.image("btn_play", "./assets/boton_play.png")
     }
 
     create(){
@@ -16,7 +20,7 @@ class Main_menu extends Phaser.Scene{
         .setInteractive()
         .on('pointerover', () =>  this.btn_play.setScale(1.1))
         .on('pointerout', () => this.btn_play.setScale( 1 ))
-        .on('pointerdown', () => this.scene.add("niveles_scene", new Niveles_scene))
+        .on('pointerdown', () => this.scene.start("Niveles_scene"))
     
 
         this.tweenMainMenu = this.tweens.createTimeline()
@@ -42,5 +46,3 @@ class Main_menu extends Phaser.Scene{
 
 
 }
-
-export default Main_menu

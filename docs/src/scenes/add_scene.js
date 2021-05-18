@@ -1,8 +1,46 @@
-import Tutorial_add_scene from './tutorial_add_scene.js'
-
 class Add_scene extends Phaser.Scene{
     constructor(){
-        super({key: "Add_scene", active: true})
+        super({key: "Add_scene"})
+    }
+
+    preload(){
+          //Fondo
+          this.load.image("fondov3", "./assets/fondov3.png")
+          this.load.image("marco", "./assets/marcov3.png")
+          this.load.image("barra", "./assets/barra.png")
+  
+          //Formulario
+          this.load.html('form', "./assets/respuesta.html")
+          
+          //Dragon
+          this.load.image("dragon", "./assets/dragon.png")
+          this.load.spritesheet("mov_dragon", "./assets/mov_sprite.png", { frameWidth: 120, frameHeight: 120})
+          this.load.spritesheet("dan_dragon", "./assets/dan_sprite.png", { frameWidth: 120, frameHeight: 120})
+          this.load.spritesheet("muer_dragon", "./assets/muerte_sprite.png", { frameWidth: 120, frameHeight: 120})
+          this.load.spritesheet("cora_sprite", "./assets/cora_sprite.png", { frameWidth: 56, frameHeight: 56})
+          
+          //Vidas
+          this.load.image("corazon", "./assets/corazon.png")
+  
+          //Tiempo
+          this.load.image("tiempo", "./assets/tiempo.png")
+  
+          //Pistas
+          this.load.image("pistas", "./assets/pistas-marco.png")
+  
+          //Ganador
+          this.load.image("msj_ganador", "./assets/marco-ganador.png")
+  
+          //Obstaculos
+          this.load.image("carne", "./assets/carne.png")
+          this.load.image("pescado", "./assets/pescado.png")
+          this.load.image("bomba", "./assets/bomba.png")
+          
+          //Puntuaciones
+          this.load.image("punt_add", "./assets/puntuaciones-marco.png")
+          this.load.image("punt_razon", "./assets/puntuaciones-marco-razon.png")
+          this.load.image("btn_menu", "./assets/btn_menu.png")
+          this.load.image("btn_reset", "./assets/btn_reset.png")
     }
 
     create(){
@@ -133,37 +171,35 @@ class Add_scene extends Phaser.Scene{
         this.textProblema = this.add.text(center_width - 240, center_height - 50, "Kalh ha recolectado: ", {
             fontFamily: 'Berlin_Sans',
             fontSize: '25px',
-            color: 'black'
+            color: '#311D0F'
         })
         this.carneProblema = this.add.text(center_width - 130, center_height +50 , '= 0', {
             fontFamily: 'Berlin_Sans',
             fontSize: '40px',
-            color: 'black'
+            color: '#311D0F'
         })
         this.pescadoProblema = this.add.text(center_width - 130, center_height - 10 , '= 0', {
             fontFamily: 'Berlin_Sans',
             fontSize: '40px',
-            color: 'black'
+            color: '#311D0F'
         })
         this.carneFigProblema = this.add.image(center_width - 170, center_height + 70, 'carne' )
         this.pescadoFigProblema = this.add.image(center_width - 170, center_height + 15, 'pescado' )
         
+        const configTextProblema = {
+            x: center_width + 30,
+            y: center_height - 55, 
+            text: "¿Cuánta comida ha\nrecolectado Kalh\nen total?",
+            style:{
+                fontFamily: 'Berlin_Sans',
+                fontSize: '25px',
+                align: 'center',
+                color: '#311D0F'
+            }
+        }
 
-        this.preguntaProblema01 = this.add.text(center_width + 30, center_height - 55, "¿Cuánta comida ha ", {
-            fontFamily: 'Berlin_Sans',
-            fontSize: '25px',
-            color: 'black'
-        })
-        this.preguntaProblema02 = this.add.text(center_width + 45, center_height - 30, "recolectado Kalh ", {
-            fontFamily: 'Berlin_Sans',
-            fontSize: '25px',
-            color: 'black'
-        })
-        this.preguntaProblema03 = this.add.text(center_width + 85, center_height -5 , "en total? ", {
-            fontFamily: 'Berlin_Sans',
-            fontSize: '25px',
-            color: 'black'
-        })
+        this.preguntaProblema = this.make.text(configTextProblema)
+
 
 
         //Input: Respuesta
@@ -178,9 +214,7 @@ class Add_scene extends Phaser.Scene{
             this.pescadoProblema,
             this.carneFigProblema,
             this.pescadoFigProblema,
-            this.preguntaProblema01,
-            this.preguntaProblema02,
-            this.preguntaProblema03,
+            this.preguntaProblema,
             this.respuestaFinal,
 
         ])
@@ -211,7 +245,7 @@ class Add_scene extends Phaser.Scene{
         this.textRazonVidas = this.add.text(center_width - 115 , center_height - 130, "¡Kalh no tiene vidas!", {
             fontFamily: 'Berlin_Sans',
             fontSize: '28px',
-            color: 'black'
+            color: '#311D0F'
         })
 
         //Contenedor: Tabla razon juego - Vidas
@@ -249,7 +283,7 @@ class Add_scene extends Phaser.Scene{
         this.textRazonTiempo = this.add.text(center_width - 118 , center_height - 130, "¡Se acabó el tiempo!", {
             fontFamily: 'Berlin_Sans',
             fontSize: '28px',
-            color: 'black'
+            color: '#311D0F'
         })
 
         //Contenedor: Tabla razon juego - Tiempo
@@ -305,14 +339,14 @@ class Add_scene extends Phaser.Scene{
         this.textPista01 = this.add.text(1800, center_height + 160, "PISTA 01 ", {
             fontFamily: 'Berlin_Sans',
             fontSize: '40px',
-            color: 'black'
+            color: '#311D0F'
         })
        
         //Pista02
         this.textPista02 = this.add.text(1800, center_height + 160, "PISTA 02 ", {
             fontFamily: 'Berlin_Sans',
             fontSize: '40px',
-            color: 'black'
+            color: '#311D0F'
         })
 
         //Tween Pista01 
@@ -358,25 +392,33 @@ class Add_scene extends Phaser.Scene{
         this.dragonGanador = this.physics.add.sprite(center_width - 180 ,center_height, 'mov_dragon')
        
         //Mensaje de Ganaste
-        this.msjGanaste = this.add.text(center_width - 100, center_height - 25, "¡LO LOGRASTE!", {
+        this.msjGanaste = this.add.text(center_width - 100, center_height - 60, "¡LO LOGRASTE!", {
             fontFamily: 'Berlin_Sans',
             fontSize: '50px',
-            color: 'black'
+            color: '#311D0F'
         })
 
-        //Mensaje reiniciar
-        this.msjGanasteReiniciar = this.add.text(center_width - 40, center_height + 70, "Presiona ESPACIO para volver a jugar", {
-            fontFamily: 'Berlin_Sans',
-            fontSize: '18px',
-            color: 'black'
-        })
+
+        this.btn_menu = this.add.sprite( center_width + 20 , center_height + 40, 'btn_menu')
+        .setInteractive()
+        .on('pointerover', () =>  this.btn_menu.setScale(1.1))
+        .on('pointerout', () => this.btn_menu.setScale( 1 ))
+        .on('pointerdown', () => this.scene.start("Niveles_scene"))
+
+        this.btn_reset = this.add.sprite( center_width + 110 , center_height + 40, 'btn_reset')
+        .setInteractive()
+        .on('pointerover', () =>  this.btn_reset.setScale(1.1))
+        .on('pointerout', () => this.btn_reset.setScale( 1 ))
+        .on('pointerdown', () => this.scene.restart())
+    
 
         //Contenedor: Marco Ganador
         this.contMarcoGanador = this.add.container(1000, 0, [
             this.marcoGanador,
             this.dragonGanador,
             this.msjGanaste,
-            this.msjGanasteReiniciar
+            this.btn_menu,
+            this.btn_reset
         ])
 
         //Tween contenedor: Marco Ganador
@@ -394,29 +436,40 @@ class Add_scene extends Phaser.Scene{
         //Dragon Reset
         this.dragonReset = this.physics.add.sprite(center_width - 160 ,center_height, 'mov_dragon')
         //Mensaje Reset
-        this.msjReset01 = this.add.text(center_width - 60, center_height - 50, "¡Volvamos a ", {
-            fontFamily: 'Berlin_Sans',
-            fontSize: '50px',
-            color: 'black'
-        })
-        this.msjReset02 = this.add.text(center_width - 40, center_height , "intentarlo! ", {
-            fontFamily: 'Berlin_Sans',
-            fontSize: '50px',
-            color: 'black'
-        })
-        this.msjResetReiniciar = this.add.text(center_width - 40, center_height + 70, "Presiona ESPACIO para volver a jugar", {
-            fontFamily: 'Berlin_Sans',
-            fontSize: '18px',
-            color: 'black'
-        })
+
+        const configTextMsjReset = {
+            x: center_width -50,
+            y: center_height -80,
+            text: "¡Volvamos a\n intentarlo! ",
+            style:{
+                fontFamily: 'Berlin_Sans',
+                fontSize: '45px',
+                align: 'center',
+                color: '#311D0F'
+            }
+        }
+
+        this.msjReset = this.make.text(configTextMsjReset)
+        this.btn_menuReset = this.add.sprite( center_width + 20 , center_height + 55, 'btn_menu')
+        .setInteractive()
+        .on('pointerover', () =>  this.btn_menuReset.setScale(1.1))
+        .on('pointerout', () => this.btn_menuReset.setScale( 1 ))
+        .on('pointerdown', () => this.scene.start("Niveles_scene"))
+
+        this.btn_resetReset = this.add.sprite( center_width + 110 , center_height + 55, 'btn_reset')
+        .setInteractive()
+        .on('pointerover', () =>  this.btn_resetReset.setScale(1.1))
+        .on('pointerout', () => this.btn_resetReset.setScale( 1 ))
+        .on('pointerdown', () => this.scene.restart())
+      
 
         //Contenedor: Marco Reset
         this.contMarcoReset = this.add.container(1000,0, [
             this.marcoReset,
             this.dragonReset,
-            this.msjReset01,
-            this.msjReset02,
-            this.msjResetReiniciar
+            this.msjReset,
+            this.btn_resetReset,
+            this.btn_menuReset
         ])
 
         //Tween contenedor: Marco Reset
@@ -428,7 +481,6 @@ class Add_scene extends Phaser.Scene{
             x:0
         })       
 
-        //this.scene.add("Tutorial", new Tutorial_add_scene)
     }
 
     update(){
@@ -502,8 +554,6 @@ class Add_scene extends Phaser.Scene{
         var dragonReset = this.dragonReset
         var marcoReset = this.tweenReset
         var dragon = this.dragon
-        var scene = this.scene
-        var space_key = this.input.keyboard.addKey('SPACE')
         if(this.data.get('vida') > 0){
             if(this.data.get('temporizador') > 0){
                 this.data.setValue('temporizador', this.data.get('temporizador') - 1) 
@@ -527,9 +577,6 @@ class Add_scene extends Phaser.Scene{
                                 dragonGanador.anims.play('dragon_mov')
                                 dragon.body.reset(1400,400)
                                 console.log("GANASTE")
-                                space_key.on('down', function(event){
-                                    scene.restart()
-                                })
                             } else {
                                 marcoPistas.play()
                                 if(event.target.name === 'enviar'){
@@ -552,9 +599,6 @@ class Add_scene extends Phaser.Scene{
                                         dragon.body.reset(1400,400)
                                         marcoReset.play()
                                         dragonReset.anims.play('dragon_mov')
-                                        space_key.on('down', function(event){
-                                            scene.restart()
-                                        })
                                     }
 
                                 }
@@ -585,8 +629,6 @@ class Add_scene extends Phaser.Scene{
         var dragonReset = this.dragonReset
         var marcoReset = this.tweenReset
         var dragon = this.dragon
-        var scene = this.scene
-        var space_key = this.input.keyboard.addKey('SPACE')
         if (this.data.get('vida') === 2){
             this.corazon_3.anims.play('corazon_3', true)
         } else if (this.data.get('vida') === 1){
@@ -611,9 +653,6 @@ class Add_scene extends Phaser.Scene{
                         dragonGanador.anims.play('dragon_mov')
                         dragon.body.reset(1400,400)
                         console.log("GANASTE")
-                        space_key.on('down', function(event){
-                            scene.restart()
-                        })
                     } else {
                         marcoPistas.play()
                         if(event.target.name === 'enviar'){
@@ -635,11 +674,7 @@ class Add_scene extends Phaser.Scene{
                                 retirada_pista02.play()
                                 dragon.body.reset(1400,400)
                                 marcoReset.play()
-                                dragonReset.anims.play('dragon_mov')
-                                space_key.on('down', function(event){
-                                    scene.restart()
-                                })
-                                
+                                dragonReset.anims.play('dragon_mov')                               
                             }
                         }
                     }
@@ -695,4 +730,3 @@ class Add_scene extends Phaser.Scene{
 
 }
 
-export default Add_scene
