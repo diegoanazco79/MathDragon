@@ -4,6 +4,9 @@ class Bootloader extends Phaser.Scene {
     }
     preload(){
         this.load.on("complete", () => {
+            this.scene.start("Main_menu")
+            this.scene.start("Niveles_scene")
+            this.scene.start("Tutorial_add_scene")
             this.scene.start("Add_scene") //Llamamos a la escena que queremos.
         })
 
@@ -42,6 +45,22 @@ class Bootloader extends Phaser.Scene {
         //Puntuaciones
         this.load.image("punt_add", "./assets/puntuaciones-marco.png")
         this.load.image("punt_razon", "./assets/puntuaciones-marco-razon.png")
+
+
+        //Tutorial
+
+
+
+        //Main_menu
+        this.load.image("btn_play", "./assets/boton_play.png")
+        this.load.image("btn_full", "./assets/full_screen.png")
+
+
+        //Niveles
+        this.load.image("nivel_add", "./assets/nivel_add.png")
+        this.load.image("nivel_sus", "./assets/nivel_sus.png")
+        this.load.spritesheet("add_dragon", "./assets/add_sprite.png", { frameWidth: 240, frameHeight: 222})
+
     }
     
 }

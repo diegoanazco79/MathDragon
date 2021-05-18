@@ -1,6 +1,8 @@
+import Tutorial_add_scene from './tutorial_add_scene.js'
+
 class Add_scene extends Phaser.Scene{
     constructor(){
-        super({key: "Add_scene"})
+        super({key: "Add_scene", active: true})
     }
 
     create(){
@@ -13,9 +15,6 @@ class Add_scene extends Phaser.Scene{
         this.barra = this.physics.add.image(center_width + 300, center_height, "barra").setImmovable(true)
         this.fondo = this.add.image(center_width, center_height, "fondov3")
         this.marco = this.physics.add.image(center_width, center_height-305, "marco").setImmovable(true)
-        
-
-        
         
         
         //Datos del videojuego
@@ -429,6 +428,7 @@ class Add_scene extends Phaser.Scene{
             x:0
         })       
 
+        //this.scene.add("Tutorial", new Tutorial_add_scene)
     }
 
     update(){
