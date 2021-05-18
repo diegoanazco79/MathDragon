@@ -30,7 +30,7 @@ class Niveles_scene extends Phaser.Scene{
         
         this.tweenAdd.play()
 
-        this.dragonAdd = this.physics.add.sprite( 342 , -500, 'add_dragon').setScale(1)
+        this.dragonAdd = this.physics.add.sprite( 342 , -500, 'add_dragon').setScale(0.85)
         this.anims.create({
             key: 'dragon_add',
             frames: this.anims.generateFrameNumbers('add_dragon', {
@@ -66,6 +66,26 @@ class Niveles_scene extends Phaser.Scene{
         })
         
         this.tweenSus.play()
+
+        this.dragonSus = this.physics.add.sprite( 920 , -500, 'sus_dragon')
+        this.anims.create({
+            key: 'dragon_sus',
+            frames: this.anims.generateFrameNumbers('sus_dragon', {
+                frames: [0, 1, 2, 3]
+            }),
+            repeat: -1,
+            frameRate: 6
+        })
+        
+        this.tweenSusDragon = this.tweens.createTimeline()
+        this.tweenSusDragon.add({
+            targets: this.dragonSus,
+            duration: 1500,
+            ease: 'Power1',
+            y: 470,
+        })
+        this.tweenSusDragon.play()
+        this.dragonSus.anims.play("dragon_sus")
 
 
     }
