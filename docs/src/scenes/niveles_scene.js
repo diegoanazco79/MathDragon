@@ -5,6 +5,7 @@ class Niveles_scene extends Phaser.Scene{
 
     preload(){
         this.load.image("fondov3", "./assets/fondov3.png")
+        this.load.image("titulo", "./assets/titulo_niveles.png")
         this.load.image("nivel_add", "./assets/nivel_add.png")
         this.load.image("nivel_sus", "./assets/nivel_sus.png")
         this.load.spritesheet("add_dragon", "./assets/add_sprite.png", { frameWidth: 240, frameHeight: 222})
@@ -18,7 +19,20 @@ class Niveles_scene extends Phaser.Scene{
         let center_height = this.sys.game.config.height/2      
         
         this.fondo = this.add.image(center_width, center_height, "fondov3")
+        this.titulo= this.add.image(center_width, -500, "titulo")
 
+
+        //Titulo
+
+        this.tweenTitulo = this.tweens.createTimeline()
+        this.tweenTitulo.add({
+            targets: this.titulo,
+            duration: 1500,
+            ease:'Power1',
+            y: 100
+        })
+
+        this.tweenTitulo.play()
 
         //Nivel Adición
         this.btn_add = this.add.sprite( 353, -200, 'nivel_add')
