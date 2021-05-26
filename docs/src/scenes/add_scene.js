@@ -60,7 +60,7 @@ class Add_scene extends Phaser.Scene{
         this.data.set('puntajeCarnes', 0)
         this.data.set('puntajePescados', 0)
         this.data.set('vida', 3)
-        this.data.set('temporizador', Phaser.Math.Between(5,10))
+        this.data.set('temporizador', Phaser.Math.Between(20,40))
         this.data.set('pistas', 0)
         
 
