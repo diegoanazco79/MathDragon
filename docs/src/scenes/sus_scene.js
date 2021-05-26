@@ -1,12 +1,12 @@
-class Add_scene extends Phaser.Scene{
+class Sus_scene extends Phaser.Scene{
     constructor(){
-        super({key: "Add_scene"})
+        super({key: "Sus_scene"})
     }
 
     preload(){
           //Fondo
           this.load.image("fondov3", "./assets/fondov3.png")
-          this.load.image("marco", "./assets/marcov3.png")
+          this.load.image("marco", "./assets/marco-sus.png")
           this.load.image("barra", "./assets/barra.png")
   
           //Formulario
@@ -15,6 +15,7 @@ class Add_scene extends Phaser.Scene{
           //Dragon
           this.load.image("dragon", "./assets/dragon.png")
           this.load.spritesheet("mov_dragon", "./assets/mov_sprite.png", { frameWidth: 120, frameHeight: 120})
+          this.load.spritesheet("mov_fuego_dragon", "./assets/mov_fuego_sprite.png", { frameWidth: 250, frameHeight: 125})
           this.load.spritesheet("dan_dragon", "./assets/dan_sprite.png", { frameWidth: 120, frameHeight: 120})
           this.load.spritesheet("muer_dragon", "./assets/muerte_sprite.png", { frameWidth: 120, frameHeight: 120})
           this.load.spritesheet("cora_sprite", "./assets/cora_sprite.png", { frameWidth: 56, frameHeight: 56})
@@ -32,7 +33,7 @@ class Add_scene extends Phaser.Scene{
           this.load.image("msj_ganador", "./assets/marco-ganador.png")
   
           //Obstaculos
-          this.load.image("carne", "./assets/carne.png")
+          this.load.image("veneno", "./assets/veneno.png")
           this.load.image("pescado", "./assets/pescado.png")
           this.load.image("bomba", "./assets/bomba.png")
           
@@ -60,7 +61,7 @@ class Add_scene extends Phaser.Scene{
         this.data.set('puntajeCarnes', 0)
         this.data.set('puntajePescados', 0)
         this.data.set('vida', 3)
-        this.data.set('temporizador', Phaser.Math.Between(5,10))
+        this.data.set('temporizador', Phaser.Math.Between(20,40))
         this.data.set('pistas', 0)
         
 
@@ -84,10 +85,20 @@ class Add_scene extends Phaser.Scene{
         this.funTemporizador()
 
         //Dragon
-        this.dragon = this.physics.add.sprite(200 ,center_height, 'mov_dragon')
+        this.dragon = this.physics.add.sprite(200 ,center_height, 'mov_fuego_dragon')
         this.physics.add.collider(this.dragon, this.marco)
         this.physics.add.collider(this.dragon, this.barra)
         //Dragon: Animación vuelo
+        this.anims.create({
+            key: 'dragon_sus',
+            frames: this.anims.generateFrameNumbers('mov_fuego_dragon', {
+                frames: [0, 1, 2]
+            }),
+            repeat: -1,
+            frameRate: 6
+        })
+        this.dragon.setCollideWorldBounds(true)
+        
         this.anims.create({
             key: 'dragon_mov',
             frames: this.anims.generateFrameNumbers('mov_dragon', {
@@ -97,7 +108,7 @@ class Add_scene extends Phaser.Scene{
             frameRate: 8
         })
         this.dragon.setCollideWorldBounds(true)
-        this.dragon.anims.play('dragon_mov')
+        this.dragon.anims.play('dragon_sus')
 
         //Dragon: Animación daño
         this.anims.create({
@@ -121,17 +132,14 @@ class Add_scene extends Phaser.Scene{
         //Función de daño del dragón
         this.dragon.on('animationcomplete', this.danoComplete, this);
         
-        //Carne
-        this.carne = this.physics.add.group()
-        this.nuevaCarne()
-      
+          
         //Bombas
         this.bomba = this.physics.add.group()
         this.nuevaBomba()
                
-        //Pescado
-        this.pescado = this.physics.add.group()
-        this.nuevaPescado()
+        //Venenos
+        this.veneno = this.physics.add.group()
+        this.nuevaVeneno()
 
 
         //Controles
@@ -312,94 +320,77 @@ class Add_scene extends Phaser.Scene{
             x: -1000
         })
 
-        // Objetos de Pista 01
-        this.marcoPistas01 = this.add.image(center_width, center_height + 180, "pistas")
-        this.textPista01 = this.add.text(center_width - 185, center_height + 167, "¿Uniste las dos cantidades?", {
-                fontFamily: 'Berlin_Sans',
-                fontSize: '26px',
-                color: '#311D0F'
-            })
-        this.textPista01b = this.add.text(center_width + 140, center_height + 167, "y", {
+        
+        //Tabla de Pistas
+        this.marcoPistas = this.add.image(1800, center_height + 180, "pistas")
+        
+        //Tween Marco Pistas
+        this.tweenMarcoPistas = this.tweens.createTimeline()
+        this.tweenMarcoPistas.add({
+            targets: this.marcoPistas,
+            duration: 1500,
+            ease: 'Power1',
+            x: center_width
+        })
+
+        //Tween Retirada: Marco Pistas
+        this.tweenMarcoPistasRetirada = this.tweens.createTimeline()
+        this.tweenMarcoPistasRetirada.add({
+            targets: this.marcoPistas,
+            duration: 1500,
+            ease: 'Power1',
+            x: -1000
+        })
+
+
+        //Pista01
+        this.textPista01 = this.add.text(1800, center_height + 160, "PISTA 01 ", {
             fontFamily: 'Berlin_Sans',
-            fontSize: '22px',
+            fontSize: '40px',
             color: '#311D0F'
         })
-        this.pescadoPïsta01 = this.add.image(center_width + 120, center_height + 180, 'pescado').setScale(0.75)
-        this.carnePista01 = this.add.image(center_width + 170, center_height + 180, 'carne' ).setScale(0.75)
-    
+       
+        //Pista02
+        this.textPista02 = this.add.text(1800, center_height + 160, "PISTA 02 ", {
+            fontFamily: 'Berlin_Sans',
+            fontSize: '40px',
+            color: '#311D0F'
+        })
 
-        //Contenedor: Pista01
-        this.contPista01 = this.add.container(1000, 0, [
-            this.marcoPistas01,
-            this.textPista01,
-            this.textPista01b,
-            this.pescadoPïsta01,
-            this.carnePista01
-        ])
-
-        //Tween contenedor: Pista 01
+        //Tween Pista01 
         this.tweenPista01 = this.tweens.createTimeline()
         this.tweenPista01.add({
-            targets: this.contPista01,
+            targets: this.textPista01,
             duration: 1500,
             ease: 'Power1',
-            x:0
+            x: center_width - 170
         })
 
+        //Tween Retirada: Pista01 
         this.tweenPista01Retirada = this.tweens.createTimeline()
         this.tweenPista01Retirada.add({
-            targets: this.contPista01,
+            targets: this.textPista01,
             duration: 1500,
             ease: 'Power1',
-            x:-1000
+            x: -1000
         })
-
-
-        // Objetos de Pista 02
-        this.marcoPistas02 = this.add.image(center_width, center_height + 245, "pistas")
-        this.textPista02 = this.add.text(center_width - 165, center_height + 220, "¿Verificaste la suma que\n hiciste?", {
-            fontFamily: 'Berlin_Sans',
-            fontSize: '24px',
-            color: '#311D0F',
-            align: 'center'
-        })
-        this.pistaPescado = this.add.text(center_width + 95, center_height + 225 , '', {
-            fontFamily: 'Berlin_Sans',
-            fontSize: '35px',
-            color: '#311D0F'
-        })
-        this.pistaCarne = this.add.text(center_width + 150, center_height + 225 , '', {
-            fontFamily: 'Berlin_Sans',
-            fontSize: '35px',
-            color: '#311D0F'
-        })
-        this.pistaOperación = this.add.text(center_width + 130, center_height + 225 , '+', {
-            fontFamily: 'Berlin_Sans',
-            fontSize: '35px',
-            color: '#311D0F'
-        })
-        //Contenedor: Pista02
-        this.contPista02 = this.add.container(1000, 0, [
-            this.marcoPistas02,
-            this.textPista02,
-            this.pistaPescado,
-            this.pistaCarne,
-            this.pistaOperación
-        ])
-        //Tween contenedor: Pista 02
+  
+        //Tween Pista02
         this.tweenPista02 = this.tweens.createTimeline()
         this.tweenPista02.add({
-            targets: this.contPista02,
+            targets: this.textPista02,
             duration: 1500,
             ease: 'Power1',
-            x:0
+            x: center_width + 10
         })
+
+        //Tween Retirada: Pista02
         this.tweenPista02Retirada = this.tweens.createTimeline()
         this.tweenPista02Retirada.add({
-            targets: this.contPista02,
+            targets: this.textPista02,
             duration: 1500,
             ease: 'Power1',
-            x:-1000
+            x: -1000
         })
 
 
@@ -447,6 +438,7 @@ class Add_scene extends Phaser.Scene{
             x:0
         })
         
+
         //Marco Reset
         this.marcoReset = this.add.image(center_width, center_height, "msj_ganador")
         //Dragon Reset
@@ -519,20 +511,6 @@ class Add_scene extends Phaser.Scene{
 
     }
 
-    puntoCarne (dragon, carne){
-        carne.disableBody(true, true)
-        
-        //Puntaje Carnes
-        this.data.setValue('puntajeCarnes', this.data.get('puntajeCarnes')+1)
-        this.scoreCarnes.setText(' ' + this.data.get('puntajeCarnes'))
-        this.carneProblema.setText('= '+ this.data.get('puntajeCarnes'))
-        this.pistaCarne.setText(this.data.get('puntajeCarnes'))
-
-        //Puntaje total
-        this.data.setValue('puntaje', this.data.get('puntaje')+1)
-        
-    }
-
     puntoPescado(dragon, pescado){
         pescado.disableBody(true,true)
 
@@ -540,7 +518,6 @@ class Add_scene extends Phaser.Scene{
         this.data.setValue('puntajePescados', this.data.get('puntajePescados')+1)
         this.scorePescados.setText(' ' + this.data.get('puntajePescados'))
         this.pescadoProblema.setText('= ' + this.data.get('puntajePescados'))
-        this.pistaPescado.setText(this.data.get('puntajePescados'))
 
         //Puntaje total
         this.data.setValue('puntaje', this.data.get('puntaje')+1)
@@ -559,12 +536,14 @@ class Add_scene extends Phaser.Scene{
         var puntaje_temp = this.data.get('puntaje')
         var respuesta_temp
         var temp_pistas = 0
-        var cartelPista01 = this.tweenPista01
-        var cartelPista02 = this.tweenPista02
-        var cartelPista01Retirada = this.tweenPista01Retirada
-        var cartelPista02Retirada = this.tweenPista02Retirada
+        var marcoPistas = this.tweenMarcoPistas
+        var pista01 = this.tweenPista01
+        var pista02 = this.tweenPista02
         var retirada_puntaje = this.tweenPuntajeRetirada
         var retirada_tiempo = this.tweenTiempoRetirada
+        var retirada_pista_marco =  this.tweenMarcoPistasRetirada
+        var retirada_pista01 = this.tweenPista01Retirada
+        var retirada_pista02 = this.tweenPista02Retirada
         var dragonGanador = this.dragonGanador
         var marcoGanador = this.tweenGanador
         var dragonReset = this.dragonReset
@@ -586,29 +565,32 @@ class Add_scene extends Phaser.Scene{
                             if(puntaje_temp == respuesta_temp){
                                 retirada_puntaje.play()
                                 retirada_tiempo.play()
-                                cartelPista01Retirada.play()
-                                cartelPista02Retirada.play()
+                                retirada_pista_marco.play()
+                                retirada_pista01.play()
+                                retirada_pista02.play()
                                 marcoGanador.play()
                                 dragonGanador.anims.play('dragon_mov')
                                 dragon.body.reset(1400,400)
                                 console.log("GANASTE")
                             } else {
-                                cartelPista01.play()
+                                marcoPistas.play()
                                 if(event.target.name === 'enviar'){
                                     temp_pistas ++ 
                                     respuesta_temp = this.getChildByName('respuesta').value
                                     if (temp_pistas == 1)
                                     {
+                                        pista01.play()
                                         console.log("VUELVE A INTENTARLO")
                                     } else if ( temp_pistas == 2) {
-                                        cartelPista02.play()
+                                        pista02.play()
                                         console.log("VUELVE A INTENTARLO")
                                     } else {
                                         console.log("JUEGO TERMINADO")
                                         retirada_puntaje.play()
                                         retirada_tiempo.play()
-                                        cartelPista01Retirada.play()
-                                        cartelPista02Retirada.play()
+                                        retirada_pista_marco.play()
+                                        retirada_pista01.play()
+                                        retirada_pista02.play()
                                         dragon.body.reset(1400,400)
                                         marcoReset.play()
                                         dragonReset.anims.play('dragon_mov')
@@ -629,12 +611,14 @@ class Add_scene extends Phaser.Scene{
         var puntaje_temp = this.data.get('puntaje')
         var respuesta_temp
         var temp_pistas = 0
-        var cartelPista01 = this.tweenPista01
-        var cartelPista02 = this.tweenPista02
+        var marcoPistas = this.tweenMarcoPistas
+        var pista01 = this.tweenPista01
+        var pista02 = this.tweenPista02
         var retirada_puntaje = this.tweenPuntajeRetirada
         var retirada_vida = this.tweenVidasRetirada 
-        var cartelPista01Retirada = this.tweenPista01Retirada
-        var cartelPista02Retirada = this.tweenPista02Retirada
+        var retirada_pista_marco =  this.tweenMarcoPistasRetirada
+        var retirada_pista01 = this.tweenPista01Retirada
+        var retirada_pista02 = this.tweenPista02Retirada
         var dragonGanador = this.dragonGanador
         var marcoGanador = this.tweenGanador
         var dragonReset = this.dragonReset
@@ -657,29 +641,32 @@ class Add_scene extends Phaser.Scene{
                     if(puntaje_temp == respuesta_temp){
                         retirada_puntaje.play()
                         retirada_vida.play()
-                        cartelPista01Retirada.play()
-                        cartelPista02Retirada.play()
+                        retirada_pista_marco.play()
+                        retirada_pista01.play()
+                        retirada_pista02.play()
                         marcoGanador.play()
                         dragonGanador.anims.play('dragon_mov')
                         dragon.body.reset(1400,400)
                         console.log("GANASTE")
                     } else {
-                        cartelPista01.play()
+                        marcoPistas.play()
                         if(event.target.name === 'enviar'){
                             temp_pistas ++ 
                             respuesta_temp = this.getChildByName('respuesta').value
                             if (temp_pistas == 1)
                             {
+                                pista01.play()
                                 console.log("VUELVE A INTENTARLO")
                             } else if ( temp_pistas == 2) {
-                                cartelPista02.play()
+                                pista02.play()
                                 console.log("VUELVE A INTENTARLO")
                             } else {
                                 console.log("JUEGO TERMINADO")
                                 retirada_puntaje.play()
                                 retirada_vida.play()
-                                cartelPista01Retirada.play()
-                                cartelPista02Retirada.play()
+                                retirada_pista_marco.play()
+                                retirada_pista01.play()
+                                retirada_pista02.play()
                                 dragon.body.reset(1400,400)
                                 marcoReset.play()
                                 dragonReset.anims.play('dragon_mov')                               
@@ -694,21 +681,21 @@ class Add_scene extends Phaser.Scene{
          
     }
 
-    nuevaCarne() {
-        if(this.data.get('vida') > 0 && this.data.get('temporizador')> 0){
-            this.carne.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(150,680), 'carne');
-            this.carne.setVelocityX(-200);
-            this.carne.checkWorldBounds = true;
-            this.carne.outOfBoundsKill = true;
-            this.time.delayedCall(2500, this.nuevaCarne, [], this);
-            this.physics.add.overlap(this.dragon, this.carne, this.puntoCarne, null, this);
+    nuevaVeneno(){
+        if(this.data.get('vida')> 0 && this.data.get('temporizador') > 0) {
+            this.veneno.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(150,570), 'veneno');
+            this.veneno.setVelocityX(-200);
+            this.veneno.checkWorldBounds = true;
+            this.veneno.outOfBoundsKill = true;
+            this.time.delayedCall(1000, this.nuevaVeneno, [], this);
+            this.physics.add.overlap(this.dragon, this.veneno, this.puntoPescado, null, this);
         }
-        
+
     }
 
     nuevaPescado() {
         if(this.data.get('vida')> 0 && this.data.get('temporizador') > 0) {
-            this.pescado.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(150,680), 'pescado');
+            this.pescado.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(150,570), 'pescado');
             this.pescado.setVelocityX(-200);
             this.pescado.checkWorldBounds = true;
             this.pescado.outOfBoundsKill = true;
@@ -719,7 +706,7 @@ class Add_scene extends Phaser.Scene{
 
     nuevaBomba() {
         if(this.data.get('vida')> 0 && this.data.get('temporizador') > 0){
-            this.bomba.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(150,680), 'bomba');
+            this.bomba.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(150,570), 'bomba');
             this.bomba.setVelocityX(-200);
             this.bomba.checkWorldBounds = true;
             this.bomba.outOfBoundsKill = true;
@@ -731,7 +718,7 @@ class Add_scene extends Phaser.Scene{
 
     danoComplete(animation, frame, sprite){
         if (animation.key === 'dragon_dan') {
-            this.dragon.play('dragon_mov');
+            this.dragon.play('dragon_sus');
         }
     }
 

@@ -79,7 +79,7 @@ class Niveles_scene extends Phaser.Scene{
         this.anims.create({
             key: 'dragon_sus',
             frames: this.anims.generateFrameNumbers('sus_dragon', {
-                frames: [0, 1, 2, 3]
+                frames: [0, 1, 2]
             }),
             repeat: -1,
             frameRate: 6

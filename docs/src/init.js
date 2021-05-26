@@ -1,6 +1,7 @@
 const config = {
     type: Phaser.AUTO,
     scale: {
+        mode: Phaser.Scale.FIT,
         width: 1280,
         height: 720,
     },
@@ -12,6 +13,7 @@ const config = {
         createContainer: true
     },
     scene: [
+        //Sus_scene
         Main_menu,
         Niveles_scene,
         Add_scene
