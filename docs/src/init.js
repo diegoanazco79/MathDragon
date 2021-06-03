@@ -13,10 +13,11 @@ const config = {
         createContainer: true
     },
     scene: [
-        //Sus_scene
+        
         Main_menu,
         Niveles_scene,
-        Add_scene
+        Add_scene,
+        Sus_scene,
     ]
 }
 

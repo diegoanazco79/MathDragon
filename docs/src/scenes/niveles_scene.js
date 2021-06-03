@@ -77,7 +77,7 @@ class Niveles_scene extends Phaser.Scene{
         .setInteractive()
         .on('pointerover', () =>  this.btn_sus.setScale(1.05))
         .on('pointerout', () => this.btn_sus.setScale( 1 ))
-        .on('pointerdown', () => console.log("Iniciando Sustracción"))
+        .on('pointerdown', () => this.scene.start("Sus_scene"))
 
         this.tweenSus = this.tweens.createTimeline()
         this.tweenSus.add({

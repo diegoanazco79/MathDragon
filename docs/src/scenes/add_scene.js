@@ -108,7 +108,7 @@ class Add_scene extends Phaser.Scene{
             repeat: 1,
             frameRate: 8
         })
-        //Dragon: Animación daño
+        //Dragon: Animación muerte
         this.anims.create({
         key: 'dragon_muer',
         frames: this.anims.generateFrameNumbers('muer_dragon', {

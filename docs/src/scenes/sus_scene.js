@@ -5,9 +5,9 @@ class Sus_scene extends Phaser.Scene{
 
     preload(){
           //Fondo
-          this.load.image("fondov3", "./assets/fondov3.png")
-          this.load.image("marco", "./assets/marco-sus.png")
-          this.load.image("barra", "./assets/barra.png")
+          this.load.image("fondov3_sus", "./assets/fondov3.png")
+          this.load.image("marco_sus", "./assets/marco-sus.png")
+          this.load.image("barra_sus", "./assets/barra.png")
   
           //Formulario
           this.load.html('form', "./assets/respuesta.html")
@@ -51,26 +51,27 @@ class Sus_scene extends Phaser.Scene{
         let center_height = this.sys.game.config.height/2        
         
         //Fondo
-        this.barra = this.physics.add.image(center_width + 300, center_height, "barra").setImmovable(true)
-        this.fondo = this.add.image(center_width, center_height, "fondov3")
-        this.marco = this.physics.add.image(center_width, center_height-305, "marco").setImmovable(true)
-        
+        this.barra = this.physics.add.image(center_width + 300, center_height, "barra_sus").setImmovable(true)
+        this.fondo = this.add.image(center_width, center_height, "fondov3_sus")
+        this.marco = this.physics.add.image(center_width, center_height-305, "marco_sus").setImmovable(true)
         
         //Datos del videojuego
         this.data.set('puntaje', 0)
-        this.data.set('puntajeCarnes', 0)
-        this.data.set('puntajePescados', 0)
+        this.data.set('puntajeVenenos', 0)
         this.data.set('vida', 3)
         this.data.set('temporizador', Phaser.Math.Between(20,40))
+        this.data.set('venenosMaximo', Phaser.Math.Between(50,80))
         this.data.set('pistas', 0)
-        
+        this.data.set('puntajeGanadorTemp', this.data.get('venenosMaximo'))
 
-        this.scorePescados = this.add.text(center_width + 310, center_height - 338, ' 0', { 
+        //Datos del tablero
+        this.scoreVenenosMax = this.add.text(center_width + 310, center_height - 338, `${this.data.get('venenosMaximo')} /`, { 
             fontFamily: 'Berlin_Sans',
             fontSize: '50px',
             color: 'white' }
             )
-        this.scoreCarnes = this.add.text(center_width + 470, center_height - 338, ' 0', { 
+
+        this.scoreVenenos = this.add.text(center_width + 380, center_height - 338, ' 0', { 
             fontFamily: 'Berlin_Sans',
             fontSize: '50px',
             color: 'white' }
@@ -88,17 +89,18 @@ class Sus_scene extends Phaser.Scene{
         this.dragon = this.physics.add.sprite(200 ,center_height, 'mov_fuego_dragon')
         this.physics.add.collider(this.dragon, this.marco)
         this.physics.add.collider(this.dragon, this.barra)
+
         //Dragon: Animación vuelo
         this.anims.create({
-            key: 'dragon_sus',
+            key: 'mov_fuego_dragon',
             frames: this.anims.generateFrameNumbers('mov_fuego_dragon', {
                 frames: [0, 1, 2]
             }),
             repeat: -1,
-            frameRate: 6
+            frameRate: 8
         })
         this.dragon.setCollideWorldBounds(true)
-        
+        this.dragon.anims.play('mov_fuego_dragon')
         this.anims.create({
             key: 'dragon_mov',
             frames: this.anims.generateFrameNumbers('mov_dragon', {
@@ -107,8 +109,6 @@ class Sus_scene extends Phaser.Scene{
             repeat: -1,
             frameRate: 8
         })
-        this.dragon.setCollideWorldBounds(true)
-        this.dragon.anims.play('dragon_sus')
 
         //Dragon: Animación daño
         this.anims.create({
@@ -119,28 +119,27 @@ class Sus_scene extends Phaser.Scene{
             repeat: 1,
             frameRate: 8
         })
-        //Dragon: Animación daño
+
+        //Dragon: Animación muerte
         this.anims.create({
-        key: 'dragon_muer',
-        frames: this.anims.generateFrameNumbers('muer_dragon', {
-            frames: [0, 1, 2]
-        }),
-        repeat: 1,
-        frameRate: 5
-        })
+            key: 'dragon_muer',
+            frames: this.anims.generateFrameNumbers('muer_dragon', {
+                frames: [0, 1, 2]
+            }),
+            repeat: 1,
+            frameRate: 5
+            })
 
         //Función de daño del dragón
         this.dragon.on('animationcomplete', this.danoComplete, this);
-        
-          
+
         //Bombas
         this.bomba = this.physics.add.group()
         this.nuevaBomba()
-               
+
         //Venenos
         this.veneno = this.physics.add.group()
         this.nuevaVeneno()
-
 
         //Controles
         this.cursor = this.input.keyboard.createCursorKeys()
@@ -174,30 +173,35 @@ class Sus_scene extends Phaser.Scene{
             frameRate: 6
         })
 
-        // Tabla de puntajes y contenedores
+        // Tabla de puntajes (tweens, y contenedores)
         this.puntosTemp = this.add.image(center_width , center_height + 30, "punt_add")
-        this.textProblema = this.add.text(center_width - 240, center_height - 50, "Kalh ha recolectado: ", {
+        this.textProblema01 = this.add.text(center_width - 240, center_height - 50, "Kalh debía destrozar: ", {
             fontFamily: 'Berlin_Sans',
             fontSize: '25px',
             color: '#311D0F'
         })
-        this.carneProblema = this.add.text(center_width - 130, center_height +50 , '= 0', {
+        this.textProblema02 = this.add.text(center_width - 240, center_height + 40, "Kalh destrozó: ", {
+            fontFamily: 'Berlin_Sans',
+            fontSize: '25px',
+            color: '#311D0F'
+        })
+        this.venenoProblemaMax = this.add.text(center_width - 150, center_height - 10 , `= ${this.data.get('venenosMaximo')}`, {
             fontFamily: 'Berlin_Sans',
             fontSize: '40px',
             color: '#311D0F'
         })
-        this.pescadoProblema = this.add.text(center_width - 130, center_height - 10 , '= 0', {
+        this.venenoProblema = this.add.text(center_width - 150, center_height + 75  , `= 0`, {
             fontFamily: 'Berlin_Sans',
             fontSize: '40px',
             color: '#311D0F'
         })
-        this.carneFigProblema = this.add.image(center_width - 170, center_height + 70, 'carne' )
-        this.pescadoFigProblema = this.add.image(center_width - 170, center_height + 15, 'pescado' )
+        this.venenoFigProblema01 = this.add.image(center_width - 180, center_height + 5, 'veneno' )
+        this.venenoFigProblema02 = this.add.image(center_width - 180, center_height + 90, 'veneno' )
         
         const configTextProblema = {
             x: center_width + 30,
-            y: center_height - 55, 
-            text: "¿Cuánta comida ha\nrecolectado Kalh\nen total?",
+            y: center_height - 50, 
+            text: "¿Cuántas botellas de\nveneno le faltó\ndestrozar a Kalh?",
             style:{
                 fontFamily: 'Berlin_Sans',
                 fontSize: '25px',
@@ -207,27 +211,21 @@ class Sus_scene extends Phaser.Scene{
         }
 
         this.preguntaProblema = this.make.text(configTextProblema)
-
-
-
-        //Input: Respuesta
         this.respuestaFinal = this.add.dom(center_width + 135,center_height + 55 ).createFromCache('form')
 
-       
-        //Contenedor tabla de puntuaciones
         this.contPuntajeTemp = this.add.container(0, -700, [
             this.puntosTemp,
-            this.textProblema,
-            this.carneProblema,
-            this.pescadoProblema,
-            this.carneFigProblema,
-            this.pescadoFigProblema,
+            this.textProblema01,
+            this.textProblema02,
+            this.venenoProblema,
+            this.venenoProblemaMax,
+            this.venenoFigProblema01,
+            this.venenoFigProblema02,
             this.preguntaProblema,
             this.respuestaFinal,
 
         ])
         
-        //Tween contenedor de puntajes
         this.tweenPuntaje = this.tweens.createTimeline()
         this.tweenPuntaje.add({
             targets: this.contPuntajeTemp,
@@ -236,7 +234,6 @@ class Sus_scene extends Phaser.Scene{
             y: 0,
         })
 
-        //Tween retirada: Contenedor de puntajes
         this.tweenPuntajeRetirada = this.tweens.createTimeline()
         this.tweenPuntajeRetirada.add({
             targets: this.contPuntajeTemp,
@@ -245,8 +242,7 @@ class Sus_scene extends Phaser.Scene{
             x: -1000,
         })
 
-
-        //Tabla de razón de juego - Vidas
+        //Tabla de razón de juego - Vidas (tweens y contenedores)
         this.puntosRazonVidas = this.add.image(center_width , center_height - 120, "punt_razon")
         this.corazonRazon01 = this.add.image(center_width - 130, center_height - 130, "corazon").setScale(0.4)
         this.corazonRazon02 = this.add.image(center_width + 133, center_height - 130, "corazon").setScale(0.4)
@@ -256,7 +252,6 @@ class Sus_scene extends Phaser.Scene{
             color: '#311D0F'
         })
 
-        //Contenedor: Tabla razon juego - Vidas
         this.contRazonVidas = this.add.container(0, -700, [
             this.puntosRazonVidas,
             this.corazonRazon01,
@@ -264,7 +259,6 @@ class Sus_scene extends Phaser.Scene{
             this.textRazonVidas
         ])
 
-        //Tween contenedor razon juego - Vidas
         this.tweenVidas = this.tweens.createTimeline()
         this.tweenVidas.add({
             targets: this.contRazonVidas,
@@ -273,7 +267,6 @@ class Sus_scene extends Phaser.Scene{
             y: 0,
         })
 
-        //Tween retirada: contenedor razon juego - vidas
         this.tweenVidasRetirada = this.tweens.createTimeline()
         this.tweenVidasRetirada.add({
             targets: this.contRazonVidas,
@@ -283,8 +276,7 @@ class Sus_scene extends Phaser.Scene{
         })
 
 
-       
-        //Tabla de razon de juego - Tiempo
+        //Tabla de razon de juego - Tiempo (tweens y contenedores)
         this.puntosRazonTiempo = this.add.image(center_width , center_height - 120, "punt_razon")
         this.tiempoRazon01 = this.add.image(center_width - 130, center_height - 130, "tiempo")
         this.tiempoRazon02 = this.add.image(center_width + 130, center_height - 130, "tiempo")
@@ -294,7 +286,6 @@ class Sus_scene extends Phaser.Scene{
             color: '#311D0F'
         })
 
-        //Contenedor: Tabla razon juego - Tiempo
         this.contRazonTiempo = this.add.container(0, -700 , [
             this.puntosRazonTiempo,
             this.tiempoRazon01,
@@ -302,7 +293,6 @@ class Sus_scene extends Phaser.Scene{
             this.textRazonTiempo
         ])
 
-        //Tween contenedor razon juego - Tiempo
         this.tweenTiempo = this.tweens.createTimeline()
         this.tweenTiempo.add({
             targets: this.contRazonTiempo,
@@ -311,7 +301,6 @@ class Sus_scene extends Phaser.Scene{
             y:0
         })
 
-        //Tween retirada: contenedor razon juego - Tiempo
         this.tweenTiempoRetirada = this.tweens.createTimeline()
         this.tweenTiempoRetirada.add({
             targets: this.contRazonTiempo,
@@ -320,92 +309,101 @@ class Sus_scene extends Phaser.Scene{
             x: -1000
         })
 
-        
-        //Tabla de Pistas
-        this.marcoPistas = this.add.image(1800, center_height + 180, "pistas")
-        
-        //Tween Marco Pistas
-        this.tweenMarcoPistas = this.tweens.createTimeline()
-        this.tweenMarcoPistas.add({
-            targets: this.marcoPistas,
-            duration: 1500,
-            ease: 'Power1',
-            x: center_width
-        })
+        // Pista N°1 (objetos, contenedores, tweens)
+        this.marcoPistas01 = this.add.image(center_width, center_height + 180, "pistas")
+        this.textPista01 = this.add.text(center_width - 185, center_height + 167, " Pista 01 - Pista 01 - Pista01- Pista", {
+                fontFamily: 'Berlin_Sans',
+                fontSize: '26px',
+                color: '#311D0F'
+            })
+        // this.textPista01b = this.add.text(center_width + 140, center_height + 167, "y", {
+        //     fontFamily: 'Berlin_Sans',
+        //     fontSize: '22px',
+        //     color: '#311D0F'
+        // })
+        // this.pescadoPïsta01 = this.add.image(center_width + 120, center_height + 180, 'pescado').setScale(0.75)
+        // this.carnePista01 = this.add.image(center_width + 170, center_height + 180, 'carne' ).setScale(0.75)
+    
+        this.contPista01 = this.add.container(1000, 0, [
+            this.marcoPistas01,
+            this.textPista01,
+            // this.textPista01b,
+            // this.pescadoPïsta01,
+            // this.carnePista01
+        ])
 
-        //Tween Retirada: Marco Pistas
-        this.tweenMarcoPistasRetirada = this.tweens.createTimeline()
-        this.tweenMarcoPistasRetirada.add({
-            targets: this.marcoPistas,
-            duration: 1500,
-            ease: 'Power1',
-            x: -1000
-        })
-
-
-        //Pista01
-        this.textPista01 = this.add.text(1800, center_height + 160, "PISTA 01 ", {
-            fontFamily: 'Berlin_Sans',
-            fontSize: '40px',
-            color: '#311D0F'
-        })
-       
-        //Pista02
-        this.textPista02 = this.add.text(1800, center_height + 160, "PISTA 02 ", {
-            fontFamily: 'Berlin_Sans',
-            fontSize: '40px',
-            color: '#311D0F'
-        })
-
-        //Tween Pista01 
         this.tweenPista01 = this.tweens.createTimeline()
         this.tweenPista01.add({
-            targets: this.textPista01,
+            targets: this.contPista01,
             duration: 1500,
             ease: 'Power1',
-            x: center_width - 170
+            x:0
         })
 
-        //Tween Retirada: Pista01 
         this.tweenPista01Retirada = this.tweens.createTimeline()
         this.tweenPista01Retirada.add({
-            targets: this.textPista01,
+            targets: this.contPista01,
             duration: 1500,
             ease: 'Power1',
-            x: -1000
+            x:-1000
         })
-  
-        //Tween Pista02
+
+        // Pista N°2 (objetos, contenedores, tweens)
+        this.marcoPistas02 = this.add.image(center_width, center_height + 245, "pistas")
+        this.textPista02 = this.add.text(center_width - 165, center_height + 220, "¿Verificaste la resta que\n hiciste?", {
+            fontFamily: 'Berlin_Sans',
+            fontSize: '24px',
+            color: '#311D0F',
+            align: 'center'
+        })
+        this.pistaVenenoMax = this.add.text(center_width + 90, center_height + 225 ,this.data.get('venenosMaximo') , {
+            fontFamily: 'Berlin_Sans',
+            fontSize: '35px',
+            color: '#311D0F'
+        })
+        this.pistaVeneno = this.add.text(center_width + 150, center_height + 225 , '', {
+            fontFamily: 'Berlin_Sans',
+            fontSize: '35px',
+            color: '#311D0F'
+        })
+        this.pistaOperación = this.add.text(center_width + 130, center_height + 225 , '-', {
+            fontFamily: 'Berlin_Sans',
+            fontSize: '35px',
+            color: '#311D0F'
+        })
+
+        this.contPista02 = this.add.container(1000, 0, [
+            this.marcoPistas02,
+            this.textPista02,
+            this.pistaVenenoMax,
+            this.pistaVeneno,
+            this.pistaOperación
+        ])
+
         this.tweenPista02 = this.tweens.createTimeline()
         this.tweenPista02.add({
-            targets: this.textPista02,
+            targets: this.contPista02,
             duration: 1500,
             ease: 'Power1',
-            x: center_width + 10
+            x:0
         })
-
-        //Tween Retirada: Pista02
         this.tweenPista02Retirada = this.tweens.createTimeline()
         this.tweenPista02Retirada.add({
-            targets: this.textPista02,
+            targets: this.contPista02,
             duration: 1500,
             ease: 'Power1',
-            x: -1000
+            x:-1000
         })
 
-
-        //Marco Ganador
+        //Marco del mensaje ganador (objetos, contenedores, tweens)
         this.marcoGanador = this.add.image(center_width, center_height, "msj_ganador")
-        //Dragon Ganador
         this.dragonGanador = this.physics.add.sprite(center_width - 180 ,center_height, 'mov_dragon')
        
-        //Mensaje de Ganaste
         this.msjGanaste = this.add.text(center_width - 100, center_height - 60, "¡LO LOGRASTE!", {
             fontFamily: 'Berlin_Sans',
             fontSize: '50px',
             color: '#311D0F'
         })
-
 
         this.btn_menu = this.add.sprite( center_width + 20 , center_height + 40, 'btn_menu')
         .setInteractive()
@@ -419,8 +417,6 @@ class Sus_scene extends Phaser.Scene{
         .on('pointerout', () => this.btn_reset.setScale( 1 ))
         .on('pointerdown', () => this.scene.restart())
     
-
-        //Contenedor: Marco Ganador
         this.contMarcoGanador = this.add.container(1000, 0, [
             this.marcoGanador,
             this.dragonGanador,
@@ -429,7 +425,6 @@ class Sus_scene extends Phaser.Scene{
             this.btn_reset
         ])
 
-        //Tween contenedor: Marco Ganador
         this.tweenGanador = this.tweens.createTimeline()
         this.tweenGanador.add({
             targets: this.contMarcoGanador,
@@ -437,13 +432,10 @@ class Sus_scene extends Phaser.Scene{
             ease: 'Power1',
             x:0
         })
-        
 
-        //Marco Reset
+        //Marco del mensaje perdedor (objetos, contenedores, tweens)
         this.marcoReset = this.add.image(center_width, center_height, "msj_ganador")
-        //Dragon Reset
         this.dragonReset = this.physics.add.sprite(center_width - 160 ,center_height, 'mov_dragon')
-        //Mensaje Reset
 
         const configTextMsjReset = {
             x: center_width -50,
@@ -470,8 +462,6 @@ class Sus_scene extends Phaser.Scene{
         .on('pointerout', () => this.btn_resetReset.setScale( 1 ))
         .on('pointerdown', () => this.scene.restart())
       
-
-        //Contenedor: Marco Reset
         this.contMarcoReset = this.add.container(1000,0, [
             this.marcoReset,
             this.dragonReset,
@@ -480,7 +470,6 @@ class Sus_scene extends Phaser.Scene{
             this.btn_menuReset
         ])
 
-        //Tween contenedor: Marco Reset
         this.tweenReset = this.tweens.createTimeline()
         this.tweenReset.add({
             targets:this.contMarcoReset,
@@ -488,11 +477,9 @@ class Sus_scene extends Phaser.Scene{
             ease: 'Power1',
             x:0
         })       
-
     }
 
     update(){
-        
         //Movimiento del Dragon
         if(this.cursor.down.isDown){
             this.dragon.body.setVelocityY(150)
@@ -506,49 +493,23 @@ class Sus_scene extends Phaser.Scene{
             this.dragon.body.setVelocityX(0)
             this.dragon.body.setVelocityY(0)
         }
-
-        
-
-    }
-
-    puntoPescado(dragon, pescado){
-        pescado.disableBody(true,true)
-
-        //Puntaje Pescados
-        this.data.setValue('puntajePescados', this.data.get('puntajePescados')+1)
-        this.scorePescados.setText(' ' + this.data.get('puntajePescados'))
-        this.pescadoProblema.setText('= ' + this.data.get('puntajePescados'))
-
-        //Puntaje total
-        this.data.setValue('puntaje', this.data.get('puntaje')+1)
-    }
-
-    puntoBomba(dragon, bomba){
-        bomba.disableBody(true,true)
-
-        //Contador de vidas
-        this.data.setValue('vida', this.data.get('vida')-1)
-        this.dragon.anims.play('dragon_dan', true)
-        this.contVidas()
     }
 
     funTemporizador(){
-        var puntaje_temp = this.data.get('puntaje')
+        var puntaje_temp = this.data.get('puntajeGanadorTemp')
         var respuesta_temp
-        var temp_pistas = 0
-        var marcoPistas = this.tweenMarcoPistas
-        var pista01 = this.tweenPista01
-        var pista02 = this.tweenPista02
+        var cartelPista01Retirada = this.tweenPista01Retirada
+        var cartelPista02Retirada = this.tweenPista02Retirada
         var retirada_puntaje = this.tweenPuntajeRetirada
         var retirada_tiempo = this.tweenTiempoRetirada
-        var retirada_pista_marco =  this.tweenMarcoPistasRetirada
-        var retirada_pista01 = this.tweenPista01Retirada
-        var retirada_pista02 = this.tweenPista02Retirada
         var dragonGanador = this.dragonGanador
         var marcoGanador = this.tweenGanador
-        var dragonReset = this.dragonReset
-        var marcoReset = this.tweenReset
         var dragon = this.dragon
+        var cartelPista01 = this.tweenPista01
+        var cartelPista02 = this.tweenPista02
+        var marcoReset = this.tweenReset
+        var dragonReset = this.dragonReset
+        var temp_pistas = 0
         if(this.data.get('vida') > 0){
             if(this.data.get('temporizador') > 0){
                 this.data.setValue('temporizador', this.data.get('temporizador') - 1) 
@@ -565,60 +526,52 @@ class Sus_scene extends Phaser.Scene{
                             if(puntaje_temp == respuesta_temp){
                                 retirada_puntaje.play()
                                 retirada_tiempo.play()
-                                retirada_pista_marco.play()
-                                retirada_pista01.play()
-                                retirada_pista02.play()
+                                cartelPista01Retirada.play()
+                                cartelPista02Retirada.play()
                                 marcoGanador.play()
                                 dragonGanador.anims.play('dragon_mov')
                                 dragon.body.reset(1400,400)
-                                console.log("GANASTE")
                             } else {
-                                marcoPistas.play()
+                                cartelPista01.play()
                                 if(event.target.name === 'enviar'){
                                     temp_pistas ++ 
                                     respuesta_temp = this.getChildByName('respuesta').value
                                     if (temp_pistas == 1)
                                     {
-                                        pista01.play()
                                         console.log("VUELVE A INTENTARLO")
                                     } else if ( temp_pistas == 2) {
-                                        pista02.play()
+                                        cartelPista02.play()
                                         console.log("VUELVE A INTENTARLO")
                                     } else {
-                                        console.log("JUEGO TERMINADO")
                                         retirada_puntaje.play()
                                         retirada_tiempo.play()
-                                        retirada_pista_marco.play()
-                                        retirada_pista01.play()
-                                        retirada_pista02.play()
+                                        cartelPista01Retirada.play()
+                                        cartelPista02Retirada.play()
                                         dragon.body.reset(1400,400)
                                         marcoReset.play()
                                         dragonReset.anims.play('dragon_mov')
                                     }
-
                                 }
                             }
                         }
                     })
+
                 }
             }
         }
         
     }
 
-
     contVidas(){
-        var puntaje_temp = this.data.get('puntaje')
+        var puntaje_temp = this.data.get('puntajeGanadorTemp')
         var respuesta_temp
         var temp_pistas = 0
-        var marcoPistas = this.tweenMarcoPistas
-        var pista01 = this.tweenPista01
-        var pista02 = this.tweenPista02
+        var cartelPista01 = this.tweenPista01
+        var cartelPista02 = this.tweenPista02
         var retirada_puntaje = this.tweenPuntajeRetirada
         var retirada_vida = this.tweenVidasRetirada 
-        var retirada_pista_marco =  this.tweenMarcoPistasRetirada
-        var retirada_pista01 = this.tweenPista01Retirada
-        var retirada_pista02 = this.tweenPista02Retirada
+        var cartelPista01Retirada = this.tweenPista01Retirada
+        var cartelPista02Retirada = this.tweenPista02Retirada
         var dragonGanador = this.dragonGanador
         var marcoGanador = this.tweenGanador
         var dragonReset = this.dragonReset
@@ -641,32 +594,29 @@ class Sus_scene extends Phaser.Scene{
                     if(puntaje_temp == respuesta_temp){
                         retirada_puntaje.play()
                         retirada_vida.play()
-                        retirada_pista_marco.play()
-                        retirada_pista01.play()
-                        retirada_pista02.play()
+                        cartelPista01Retirada.play()
+                        cartelPista02Retirada.play()
                         marcoGanador.play()
                         dragonGanador.anims.play('dragon_mov')
                         dragon.body.reset(1400,400)
                         console.log("GANASTE")
                     } else {
-                        marcoPistas.play()
+                        cartelPista01.play()
                         if(event.target.name === 'enviar'){
                             temp_pistas ++ 
                             respuesta_temp = this.getChildByName('respuesta').value
                             if (temp_pistas == 1)
                             {
-                                pista01.play()
                                 console.log("VUELVE A INTENTARLO")
                             } else if ( temp_pistas == 2) {
-                                pista02.play()
+                                cartelPista02.play()
                                 console.log("VUELVE A INTENTARLO")
                             } else {
                                 console.log("JUEGO TERMINADO")
                                 retirada_puntaje.play()
                                 retirada_vida.play()
-                                retirada_pista_marco.play()
-                                retirada_pista01.play()
-                                retirada_pista02.play()
+                                cartelPista01Retirada.play()
+                                cartelPista02Retirada.play()
                                 dragon.body.reset(1400,400)
                                 marcoReset.play()
                                 dragonReset.anims.play('dragon_mov')                               
@@ -676,52 +626,51 @@ class Sus_scene extends Phaser.Scene{
                 }
             })
         }
-        
-         
-         
-    }
-
-    nuevaVeneno(){
-        if(this.data.get('vida')> 0 && this.data.get('temporizador') > 0) {
-            this.veneno.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(150,570), 'veneno');
-            this.veneno.setVelocityX(-200);
-            this.veneno.checkWorldBounds = true;
-            this.veneno.outOfBoundsKill = true;
-            this.time.delayedCall(1000, this.nuevaVeneno, [], this);
-            this.physics.add.overlap(this.dragon, this.veneno, this.puntoPescado, null, this);
-        }
-
-    }
-
-    nuevaPescado() {
-        if(this.data.get('vida')> 0 && this.data.get('temporizador') > 0) {
-            this.pescado.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(150,570), 'pescado');
-            this.pescado.setVelocityX(-200);
-            this.pescado.checkWorldBounds = true;
-            this.pescado.outOfBoundsKill = true;
-            this.time.delayedCall(1000, this.nuevaPescado, [], this);
-            this.physics.add.overlap(this.dragon, this.pescado, this.puntoPescado, null, this);
-        }
-    }
-
-    nuevaBomba() {
-        if(this.data.get('vida')> 0 && this.data.get('temporizador') > 0){
-            this.bomba.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(150,570), 'bomba');
-            this.bomba.setVelocityX(-200);
-            this.bomba.checkWorldBounds = true;
-            this.bomba.outOfBoundsKill = true;
-            this.time.delayedCall(4000, this.nuevaBomba, [], this);
-            this.physics.add.overlap(this.dragon, this.bomba, this.puntoBomba, null, this);
-        }
-        
     }
 
     danoComplete(animation, frame, sprite){
         if (animation.key === 'dragon_dan') {
-            this.dragon.play('dragon_sus');
+            this.dragon.play('mov_fuego_dragon');
         }
     }
 
+    nuevaBomba(){
+        if(this.data.get('vida')> 0 && this.data.get('temporizador') > 0){
+            this.bomba.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(150,680), 'bomba');
+            this.bomba.setVelocityX(-200);
+            this.bomba.checkWorldBounds = true;
+            this.bomba.outOfBoundsKill = true;
+            this.time.delayedCall(3000, this.nuevaBomba, [], this);
+            this.physics.add.overlap(this.dragon, this.bomba, this.puntoBomba, null, this);
+        }
+    }
+
+    nuevaVeneno(){
+        if(this.data.get('vida')> 0 && this.data.get('temporizador') > 0){
+            this.veneno.create(Phaser.Math.Between(1200,1280), Phaser.Math.Between(150,680), 'veneno');
+            this.veneno.setVelocityX(-200);
+            this.veneno.checkWorldBounds = true;
+            this.veneno.outOfBoundsKill = true;
+            this.time.delayedCall(1000, this.nuevaVeneno, [], this);
+            this.physics.add.overlap(this.dragon, this.veneno, this.puntoVeneno, null, this);
+        }
+    }
+
+    puntoBomba(dragon, bomba) {
+        bomba.disableBody(true,true)
+        this.data.setValue('vida', this.data.get('vida')-1)
+        this.dragon.anims.play('dragon_dan', true)
+        this.contVidas()
+    }
+
+    puntoVeneno(dragon, veneno){
+        veneno.disableBody(true,true)
+        this.data.setValue('puntajeVenenos', this.data.get('puntajeVenenos')+1)
+        this.data.setValue('puntajeGanadorTemp', this.data.get('puntajeGanadorTemp') - 1)
+        this.venenoProblema.setText('= ' + this.data.get('puntajeVenenos'))
+        this.scoreVenenos.setText(' ' + this.data.get('puntajeVenenos'))
+        this.pistaVeneno.setText(this.data.get('puntajeVenenos'))
+    }
 
 }
 
