@@ -519,9 +519,9 @@ class Sus_scene extends Phaser.Scene{
                     this.dragon.body.setEnable(false)
                     this.tweenPuntaje.play()
                     this.tweenTiempo.play()
-                    this.respuestaFinal.addListener('click')
-                    this.respuestaFinal.on('click', function (event) {
-                        if(event.target.name === 'enviar'){
+                    this.respuestaFinal.addListener('keypress')
+                    this.respuestaFinal.on('keypress', function (event) {
+                        if(event.key === 'Enter'){
                             respuesta_temp = this.getChildByName('respuesta').value
                             if(puntaje_temp == respuesta_temp){
                                 retirada_puntaje.play()
@@ -533,7 +533,7 @@ class Sus_scene extends Phaser.Scene{
                                 dragon.body.reset(1400,400)
                             } else {
                                 cartelPista01.play()
-                                if(event.target.name === 'enviar'){
+                                if(event.key === 'Enter'){
                                     temp_pistas ++ 
                                     respuesta_temp = this.getChildByName('respuesta').value
                                     if (temp_pistas == 1)
@@ -587,9 +587,9 @@ class Sus_scene extends Phaser.Scene{
             this.dragon.body.setEnable(false)
             this.tweenPuntaje.play()
             this.tweenVidas.play()
-            this.respuestaFinal.addListener('click')
-            this.respuestaFinal.on('click', function (event) {
-                if(event.target.name === 'enviar'){
+            this.respuestaFinal.addListener('keypress')
+            this.respuestaFinal.on('keypress', function (event) {
+                if(event.key === 'Enter'){
                     respuesta_temp = this.getChildByName('respuesta').value
                     if(puntaje_temp == respuesta_temp){
                         retirada_puntaje.play()
@@ -602,7 +602,7 @@ class Sus_scene extends Phaser.Scene{
                         console.log("GANASTE")
                     } else {
                         cartelPista01.play()
-                        if(event.target.name === 'enviar'){
+                        if(event.key === 'Enter'){
                             temp_pistas ++ 
                             respuesta_temp = this.getChildByName('respuesta').value
                             if (temp_pistas == 1)
