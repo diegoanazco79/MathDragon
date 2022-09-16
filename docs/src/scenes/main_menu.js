@@ -6,6 +6,7 @@ class Main_menu extends Phaser.Scene{
     preload(){
         this.load.image("fondov3", "./assets/fondov3.png")
         this.load.image("btn_play", "./assets/boton_play.png")
+        this.load.image("main_title", "./assets/title.png")
     }
 
     create(){
@@ -13,8 +14,11 @@ class Main_menu extends Phaser.Scene{
         //Dimensiones
         let center_width = this.sys.game.config.width/2
         let center_height = this.sys.game.config.height/2      
+
         
         this.fondo = this.add.image(center_width, center_height, "fondov3")
+        
+        this.title = this.add.image(center_width, center_height - 200, "main_title").setScale(1.2)
 
         this.btn_play = this.add.sprite( 1400, center_height + 100, 'btn_play')
         .setInteractive()
