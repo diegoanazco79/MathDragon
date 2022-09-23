@@ -21,7 +21,7 @@ class Main_menu extends Phaser.Scene{
         this.title = this.add.image(center_width, center_height - 200, "main_title").setScale(1.2)
 
         this.btn_play = this.add.sprite( 1400, center_height + 100, 'btn_play')
-        .setInteractive()
+        .setInteractive({cursor: 'pointer'})
         .on('pointerover', () =>  this.btn_play.setScale(1.1))
         .on('pointerout', () => this.btn_play.setScale( 1 ))
         .on('pointerdown', () => this.scene.start("Niveles_scene"))

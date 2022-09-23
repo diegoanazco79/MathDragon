@@ -410,13 +410,13 @@ class Sus_scene extends Phaser.Scene{
         })
 
         this.btn_menu = this.add.sprite( center_width + 20 , center_height + 40, 'btn_menu')
-        .setInteractive()
+        .setInteractive({cursor: 'pointer'})
         .on('pointerover', () =>  this.btn_menu.setScale(1.1))
         .on('pointerout', () => this.btn_menu.setScale( 1 ))
         .on('pointerdown', () => this.scene.start("Niveles_scene"))
 
         this.btn_reset = this.add.sprite( center_width + 110 , center_height + 40, 'btn_reset')
-        .setInteractive()
+        .setInteractive({cursor: 'pointer'})
         .on('pointerover', () =>  this.btn_reset.setScale(1.1))
         .on('pointerout', () => this.btn_reset.setScale( 1 ))
         .on('pointerdown', () => this.scene.restart())
@@ -455,13 +455,13 @@ class Sus_scene extends Phaser.Scene{
 
         this.msjReset = this.make.text(configTextMsjReset)
         this.btn_menuReset = this.add.sprite( center_width + 20 , center_height + 55, 'btn_menu')
-        .setInteractive()
+        .setInteractive({cursor: 'pointer'})
         .on('pointerover', () =>  this.btn_menuReset.setScale(1.1))
         .on('pointerout', () => this.btn_menuReset.setScale( 1 ))
         .on('pointerdown', () => this.scene.start("Niveles_scene"))
 
         this.btn_resetReset = this.add.sprite( center_width + 110 , center_height + 55, 'btn_reset')
-        .setInteractive()
+        .setInteractive({cursor: 'pointer'})
         .on('pointerover', () =>  this.btn_resetReset.setScale(1.1))
         .on('pointerout', () => this.btn_resetReset.setScale( 1 ))
         .on('pointerdown', () => this.scene.restart())

@@ -36,7 +36,7 @@ class Niveles_scene extends Phaser.Scene{
 
         //Nivel Adición
         this.btn_add = this.add.sprite( 353, -200, 'nivel_add')
-        .setInteractive()
+        .setInteractive({cursor: 'pointer'})
         .on('pointerover', () =>  this.btn_add.setScale(1.05))
         .on('pointerout', () => this.btn_add.setScale( 1 ))
         .on('pointerdown', () => this.scene.start("Add_scene"))
@@ -74,7 +74,7 @@ class Niveles_scene extends Phaser.Scene{
 
         //Nivel Sustracción
         this.btn_sus = this.add.sprite( 937, -200, 'nivel_sus')
-        .setInteractive()
+        .setInteractive({cursor: 'pointer'})
         .on('pointerover', () =>  this.btn_sus.setScale(1.05))
         .on('pointerout', () => this.btn_sus.setScale( 1 ))
         .on('pointerdown', () => this.scene.start("Sus_scene"))
