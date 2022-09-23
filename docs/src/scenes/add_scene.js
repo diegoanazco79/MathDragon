@@ -136,6 +136,12 @@ class Add_scene extends Phaser.Scene{
 
         //Controles
         this.cursor = this.input.keyboard.createCursorKeys()
+        this.Wkey = this.input.keyboard.addKey('W')
+        this.Akey = this.input.keyboard.addKey('A')
+        this.Skey = this.input.keyboard.addKey('S')
+        this.Dkey = this.input.keyboard.addKey('D')
+
+        this.EscKey = this.input.keyboard.addKey('ESC')
 
         //Vidas
         this.corazon_1 = this.physics.add.sprite(center_width - 520 , center_height - 310, 'cora_sprite')
@@ -500,23 +506,19 @@ class Add_scene extends Phaser.Scene{
     }
 
     update(){
-        
         //Movimiento del Dragon
-        if(this.cursor.down.isDown){
+        if(this.cursor.down.isDown || this.Skey.isDown){
             this.dragon.body.setVelocityY(150)
-        } else if (this.cursor.up.isDown) {
+        } else if (this.cursor.up.isDown || this.Wkey.isDown) {
             this.dragon.body.setVelocityY(-150)
-        } else if (this.cursor.left.isDown){
+        } else if (this.cursor.left.isDown || this.Akey.isDown){
             this.dragon.body.setVelocityX(-250)
-        } else if (this.cursor.right.isDown){
+        } else if (this.cursor.right.isDown || this.Dkey.isDown){
             this.dragon.body.setVelocityX(250)
         } else{
             this.dragon.body.setVelocityX(0)
             this.dragon.body.setVelocityY(0)
         }
-
-        
-
     }
 
     puntoCarne (dragon, carne){
