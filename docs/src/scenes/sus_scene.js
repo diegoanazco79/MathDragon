@@ -520,6 +520,42 @@ class Sus_scene extends Phaser.Scene{
                     this.tweenPuntaje.play()
                     this.tweenTiempo.play()
                     this.respuestaFinal.addListener('keypress')
+                    this.respuestaFinal.addListener('click')
+                    this.respuestaFinal.on('click', function (event) {
+                        if(event.target.name === 'enviar'){
+                            respuesta_temp = this.getChildByName('respuesta').value
+                            if(puntaje_temp == respuesta_temp){
+                                retirada_puntaje.play()
+                                retirada_tiempo.play()
+                                cartelPista01Retirada.play()
+                                cartelPista02Retirada.play()
+                                marcoGanador.play()
+                                dragonGanador.anims.play('dragon_mov')
+                                dragon.body.reset(1400,400)
+                            } else {
+                                cartelPista01.play()
+                                if(event.target.name === 'enviar'){
+                                    temp_pistas ++ 
+                                    respuesta_temp = this.getChildByName('respuesta').value
+                                    if (temp_pistas == 1)
+                                    {
+                                        console.log("VUELVE A INTENTARLO")
+                                    } else if ( temp_pistas == 2) {
+                                        cartelPista02.play()
+                                        console.log("VUELVE A INTENTARLO")
+                                    } else {
+                                        retirada_puntaje.play()
+                                        retirada_tiempo.play()
+                                        cartelPista01Retirada.play()
+                                        cartelPista02Retirada.play()
+                                        dragon.body.reset(1400,400)
+                                        marcoReset.play()
+                                        dragonReset.anims.play('dragon_mov')
+                                    }
+                                }
+                            }
+                        }
+                    })
                     this.respuestaFinal.on('keypress', function (event) {
                         if(event.key === 'Enter'){
                             respuesta_temp = this.getChildByName('respuesta').value
@@ -588,6 +624,44 @@ class Sus_scene extends Phaser.Scene{
             this.tweenPuntaje.play()
             this.tweenVidas.play()
             this.respuestaFinal.addListener('keypress')
+            this.respuestaFinal.addListener('click')
+            this.respuestaFinal.on('click', function (event) {
+                if(event.target.name === 'enviar'){
+                    respuesta_temp = this.getChildByName('respuesta').value
+                    if(puntaje_temp == respuesta_temp){
+                        retirada_puntaje.play()
+                        retirada_vida.play()
+                        cartelPista01Retirada.play()
+                        cartelPista02Retirada.play()
+                        marcoGanador.play()
+                        dragonGanador.anims.play('dragon_mov')
+                        dragon.body.reset(1400,400)
+                        console.log("GANASTE")
+                    } else {
+                        cartelPista01.play()
+                        if(event.target.name === 'enviar'){
+                            temp_pistas ++ 
+                            respuesta_temp = this.getChildByName('respuesta').value
+                            if (temp_pistas == 1)
+                            {
+                                console.log("VUELVE A INTENTARLO")
+                            } else if ( temp_pistas == 2) {
+                                cartelPista02.play()
+                                console.log("VUELVE A INTENTARLO")
+                            } else {
+                                console.log("JUEGO TERMINADO")
+                                retirada_puntaje.play()
+                                retirada_vida.play()
+                                cartelPista01Retirada.play()
+                                cartelPista02Retirada.play()
+                                dragon.body.reset(1400,400)
+                                marcoReset.play()
+                                dragonReset.anims.play('dragon_mov')                               
+                            }
+                        }
+                    }
+                }
+            })
             this.respuestaFinal.on('keypress', function (event) {
                 if(event.key === 'Enter'){
                     respuesta_temp = this.getChildByName('respuesta').value
