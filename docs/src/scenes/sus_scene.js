@@ -315,25 +315,29 @@ class Sus_scene extends Phaser.Scene{
 
         // Pista N°1 (objetos, contenedores, tweens)
         this.marcoPistas01 = this.add.image(center_width, center_height + 180, "pistas")
-        this.textPista01 = this.add.text(center_width - 185, center_height + 167, " Pista 01 - Pista 01 - Pista01- Pista", {
+        this.textPista01 = this.add.text(center_width - 185, center_height + 167, " ¿Quitáste los ", {
                 fontFamily: 'Berlin_Sans',
                 fontSize: '26px',
                 color: '#311D0F'
             })
-        // this.textPista01b = this.add.text(center_width + 140, center_height + 167, "y", {
-        //     fontFamily: 'Berlin_Sans',
-        //     fontSize: '22px',
-        //     color: '#311D0F'
-        // })
-        // this.pescadoPïsta01 = this.add.image(center_width + 120, center_height + 180, 'pescado').setScale(0.75)
-        // this.carnePista01 = this.add.image(center_width + 170, center_height + 180, 'carne' ).setScale(0.75)
+        this.pistaVeneno01 = this.add.text(center_width -35, center_height + 167 , '', {
+            fontFamily: 'Berlin_Sans',
+            fontSize: '26px',
+            color: '#311D0F'
+        })
+        this.pescadoPïsta01 = this.add.image(center_width + 5, center_height + 180, 'veneno').setScale(0.75)
+        this.textPista02 = this.add.text(center_width + 20, center_height + 167, " venenos?", {
+            fontFamily: 'Berlin_Sans',
+            fontSize: '26px',
+            color: '#311D0F'
+        })
     
         this.contPista01 = this.add.container(1000, 0, [
             this.marcoPistas01,
             this.textPista01,
-            // this.textPista01b,
-            // this.pescadoPïsta01,
-            // this.carnePista01
+            this.pistaVeneno01,
+            this.pescadoPïsta01,
+            this.textPista02
         ])
 
         this.tweenPista01 = this.tweens.createTimeline()
@@ -748,6 +752,7 @@ class Sus_scene extends Phaser.Scene{
         this.venenoProblema.setText('= ' + this.data.get('puntajeVenenos'))
         this.scoreVenenos.setText(' ' + this.data.get('puntajeVenenos'))
         this.pistaVeneno.setText(this.data.get('puntajeVenenos'))
+        this.pistaVeneno01.setText(this.data.get('puntajeVenenos'))
     }
 
 }
